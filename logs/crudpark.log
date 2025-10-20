@@ -106,3 +106,55 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 [2025-10-20 00:45:31] [main] [INFO ] ParkingService - Exit free - Grace period: AAS221 (Duration: 3min)
 [2025-10-20 00:45:31] [main] [INFO ] ParkingService - Vehicle exit successful: AAS221 - Ticket ID: 13 (Amount: $0.0, Free: true)
 [2025-10-20 00:45:31] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-20 11:18:41] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:18:41] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:18:42] [app.Main.main()] [WARN ] SwingAuthController - Login failed: Error accessing authentication data: Error accessing operator data (DATA_ACCESS)
+[2025-10-20 11:18:57] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:18:57] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:18:57] [app.Main.main()] [WARN ] SwingAuthController - Login failed: Error accessing authentication data: Error accessing operator data (DATA_ACCESS)
+[2025-10-20 11:21:20] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:21:20] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:21:21] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 11:21:21] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 11:22:18] [app.Main.main()] [INFO ] SwingVehicleEntryController - Processing vehicle entry: PPP000 (Operator ID: 3)
+[2025-10-20 11:22:19] [app.Main.main()] [INFO ] VehicleDAO - Creating new vehicle: PPP000 (Type: Car)
+[2025-10-20 11:22:19] [app.Main.main()] [ERROR] VehicleDAO - SQL error creating vehicle PPP000: This connection has been closed.
+[2025-10-20 11:22:19] [app.Main.main()] [WARN ] SwingVehicleEntryController - Entry failed: Error processing vehicle entry: Database connection error (DATA_ACCESS)
+[2025-10-20 11:25:37] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:25:37] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:25:39] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 11:25:39] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 11:25:45] [app.Main.main()] [INFO ] SwingVehicleEntryController - Processing vehicle entry: LLL333 (Operator ID: 3)
+[2025-10-20 11:25:46] [app.Main.main()] [INFO ] VehicleDAO - Creating new vehicle: LLL333 (Type: Car)
+[2025-10-20 11:25:46] [app.Main.main()] [ERROR] VehicleDAO - SQL error creating vehicle LLL333: This connection has been closed.
+[2025-10-20 11:25:46] [app.Main.main()] [WARN ] SwingVehicleEntryController - Entry failed: Error processing vehicle entry: Database connection error (DATA_ACCESS)
+[2025-10-20 11:37:00] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:37:00] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:37:02] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 11:37:02] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 11:37:15] [app.Main.main()] [INFO ] SwingVehicleEntryController - Processing vehicle entry: ZZZ111 (Operator ID: 3)
+[2025-10-20 11:37:16] [app.Main.main()] [INFO ] VehicleDAO - Creating new vehicle: ZZZ111 (Type: Car)
+[2025-10-20 11:37:16] [app.Main.main()] [INFO ] VehicleDAO - Vehicle created: ZZZ111 - ID 22
+[2025-10-20 11:37:17] [app.Main.main()] [INFO ] TicketDAO - Creating ticket: TKT000012 for vehicle ID 22 (Type: Guest)
+[2025-10-20 11:37:17] [app.Main.main()] [INFO ] TicketDAO - Ticket created successfully: ID 14 - TKT000012
+[2025-10-20 11:37:17] [app.Main.main()] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000012 (ZZZ111)
+[2025-10-20 11:40:41] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:40:41] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:40:42] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 11:40:42] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 11:40:51] [app.Main.main()] [INFO ] SwingVehicleEntryController - Processing vehicle entry: CCC111 (Operator ID: 3)
+[2025-10-20 11:40:52] [app.Main.main()] [INFO ] VehicleDAO - Creating new vehicle: CCC111 (Type: Car)
+[2025-10-20 11:40:52] [app.Main.main()] [INFO ] VehicleDAO - Vehicle created: CCC111 - ID 23
+[2025-10-20 11:40:53] [app.Main.main()] [INFO ] TicketDAO - Creating ticket: TKT000013 for vehicle ID 23 (Type: Guest)
+[2025-10-20 11:40:53] [app.Main.main()] [INFO ] TicketDAO - Ticket created successfully: ID 15 - TKT000013
+[2025-10-20 11:40:53] [app.Main.main()] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000013 (CCC111)
+[2025-10-20 11:53:46] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 11:53:46] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 11:53:48] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 11:53:48] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 11:53:55] [app.Main.main()] [INFO ] SwingVehicleEntryController - Processing vehicle entry: VVV111 (Operator ID: 3)
+[2025-10-20 11:53:56] [app.Main.main()] [INFO ] VehicleDAO - Creating new vehicle: VVV111 (Type: Car)
+[2025-10-20 11:53:56] [app.Main.main()] [INFO ] VehicleDAO - Vehicle created: VVV111 - ID 24
+[2025-10-20 11:53:57] [app.Main.main()] [INFO ] TicketDAO - Creating ticket: TKT000014 for vehicle ID 24 (Type: Guest)
+[2025-10-20 11:53:57] [app.Main.main()] [INFO ] TicketDAO - Ticket created successfully: ID 16 - TKT000014
+[2025-10-20 11:53:57] [app.Main.main()] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000014 (VVV111)

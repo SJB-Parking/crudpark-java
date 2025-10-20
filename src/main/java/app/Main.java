@@ -6,6 +6,7 @@ import app.controller.SwingAuthController;
 import app.controller.SwingVehicleEntryController;
 import app.controller.SwingVehicleExitController;
 import app.dao.*;
+import app.database.DatabaseConnection;
 import app.model.Operator;
 import app.service.AuthService;
 import app.service.ParkingService;
@@ -50,6 +51,12 @@ public class Main {
             // Initialize dependencies
             initializeDependencies();
             
+            // Add shutdown hook to close connection pool gracefully
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                System.out.println("\n[INFO] Shutting down application...");
+                DatabaseConnection.closePool();
+            }));
+            
             // Start application
             run();
             
@@ -58,6 +65,10 @@ public class Main {
                 "Fatal error: " + e.getMessage(), 
                 "Error", 
                 JOptionPane.ERROR_MESSAGE);
+        } finally {
+            // Ensure pool is closed
+            DatabaseConnection.closePool();
+            System.exit(0);
         }
     }
 

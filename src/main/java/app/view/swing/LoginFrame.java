@@ -71,7 +71,7 @@ public class LoginFrame extends JDialog {
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.setPreferredSize(new Dimension(100, 35));
         loginButton.setBackground(new Color(0, 120, 215));
-        loginButton.setForeground(Color.WHITE);
+        loginButton.setForeground(Color.BLACK);
         loginButton.setFocusPainted(false);
         loginButton.addActionListener(e -> handleLogin());
 

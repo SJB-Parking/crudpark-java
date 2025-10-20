@@ -85,7 +85,7 @@ public class VehicleEntryFrame extends JDialog {
         registerButton.setFont(new Font("Arial", Font.BOLD, 14));
         registerButton.setPreferredSize(new Dimension(150, 35));
         registerButton.setBackground(new Color(0, 120, 215));
-        registerButton.setForeground(Color.WHITE);
+        registerButton.setForeground(Color.BLACK);
         registerButton.setFocusPainted(false);
         registerButton.addActionListener(e -> handleRegister());
 
@@ -130,10 +130,11 @@ public class VehicleEntryFrame extends JDialog {
 
     /**
      * Show entry success in a new window with ticket details and QR code
+     * Uses modal dialog to block until user closes the window
      */
     public static void showEntrySuccess(Ticket ticket) {
-        JFrame successFrame = new JFrame("Entry Registered Successfully");
-        successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JDialog successFrame = new JDialog((JFrame) null, "Entry Registered Successfully", true); // Modal dialog
+        successFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         successFrame.setSize(500, 650);
         successFrame.setLocationRelativeTo(null);
         successFrame.setResizable(false);
@@ -144,7 +145,7 @@ public class VehicleEntryFrame extends JDialog {
         mainPanel.setBackground(Color.WHITE);
 
         // Header
-        JLabel headerLabel = new JLabel("✓ ENTRY REGISTERED", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("ENTRY REGISTERED", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(new Color(0, 120, 215));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
@@ -159,55 +160,96 @@ public class VehicleEntryFrame extends JDialog {
         java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm a");
         String formattedEntryTime = dateFormat.format(new java.util.Date(ticket.getEntryDatetime().getTime()));
 
-        // Ticket info
-        String ticketInfo = String.format(
-            "<html><div style='font-family: Arial; padding: 20px; background-color: #f5f5f5; border-radius: 10px;'>" +
-            "<table style='width: 100%%;'>" +
-            "<tr><td><b>Ticket ID:</b></td><td>%06d</td></tr>" +
-            "<tr><td><b>License Plate:</b></td><td><span style='font-size: 16px; color: #0078D7;'>%s</span></td></tr>" +
-            "<tr><td><b>Vehicle Type:</b></td><td>%s</td></tr>" +
-            "<tr><td><b>Ticket Type:</b></td><td>%s</td></tr>" +
-            "<tr><td><b>Entry Time:</b></td><td>%s</td></tr>" +
-            "</table>" +
-            "</div></html>",
-            ticket.getId(),
-            ticket.getLicensePlate(),
-            ticket.getVehicleType(),
-            ticket.getTicketType(),
-            formattedEntryTime
-        );
+        // Ticket info panel with consistent styling
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new GridLayout(5, 2, 10, 15));
+        infoPanel.setBackground(new Color(245, 245, 245));
+        infoPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+            BorderFactory.createEmptyBorder(20, 20, 20, 20)
+        ));
 
-        JLabel infoLabel = new JLabel(ticketInfo);
-        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(infoLabel);
+        // Define consistent font sizes
+        Font labelFont = new Font("Arial", Font.BOLD, 14);
+        Font valueFont = new Font("Arial", Font.PLAIN, 14);
+        Font plateFont = new Font("Arial", Font.BOLD, 16);
+
+        // Ticket ID
+        JLabel ticketIdLabel = new JLabel("Ticket ID:");
+        ticketIdLabel.setFont(labelFont);
+        JLabel ticketIdValue = new JLabel(String.format("%06d", ticket.getId()));
+        ticketIdValue.setFont(valueFont);
+        infoPanel.add(ticketIdLabel);
+        infoPanel.add(ticketIdValue);
+
+        // License Plate (destacado)
+        JLabel plateLabel = new JLabel("License Plate:");
+        plateLabel.setFont(labelFont);
+        JLabel plateValue = new JLabel(ticket.getLicensePlate());
+        plateValue.setFont(plateFont);
+        plateValue.setForeground(new Color(0, 120, 215));
+        infoPanel.add(plateLabel);
+        infoPanel.add(plateValue);
+
+        // Vehicle Type
+        JLabel typeLabel = new JLabel("Vehicle Type:");
+        typeLabel.setFont(labelFont);
+        JLabel typeValue = new JLabel(ticket.getVehicleType());
+        typeValue.setFont(valueFont);
+        infoPanel.add(typeLabel);
+        infoPanel.add(typeValue);
+
+        // Ticket Type
+        JLabel ticketTypeLabel = new JLabel("Ticket Type:");
+        ticketTypeLabel.setFont(labelFont);
+        JLabel ticketTypeValue = new JLabel(ticket.getTicketType());
+        ticketTypeValue.setFont(valueFont);
+        infoPanel.add(ticketTypeLabel);
+        infoPanel.add(ticketTypeValue);
+
+        // Entry Time
+        JLabel entryLabel = new JLabel("Entry Time:");
+        entryLabel.setFont(labelFont);
+        JLabel entryValue = new JLabel(formattedEntryTime);
+        entryValue.setFont(valueFont);
+        infoPanel.add(entryLabel);
+        infoPanel.add(entryValue);
+
+        contentPanel.add(infoPanel);
 
         // Add spacing
-        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        // QR Code
+        // QR Code section - centered
+        JPanel qrPanel = new JPanel();
+        qrPanel.setLayout(new BoxLayout(qrPanel, BoxLayout.Y_AXIS));
+        qrPanel.setBackground(Color.WHITE);
+        
         try {
             BufferedImage qrImage = QRCodeGenerator.generateQRCodeImage(ticket.getQrCodeData());
             JLabel qrLabel = new JLabel(new ImageIcon(qrImage));
             qrLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             qrLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(Color.GRAY, 2),
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 2),
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
             ));
-            contentPanel.add(qrLabel);
+            qrPanel.add(qrLabel);
 
             // QR description
-            contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            qrPanel.add(Box.createRigidArea(new Dimension(0, 10)));
             JLabel qrDescription = new JLabel("Scan QR code for quick exit");
             qrDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
             qrDescription.setFont(new Font("Arial", Font.ITALIC, 12));
             qrDescription.setForeground(Color.GRAY);
-            contentPanel.add(qrDescription);
+            qrPanel.add(qrDescription);
         } catch (Exception e) {
             JLabel errorLabel = new JLabel("Error generating QR code: " + e.getMessage());
             errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             errorLabel.setForeground(Color.RED);
-            contentPanel.add(errorLabel);
+            qrPanel.add(errorLabel);
         }
+
+        contentPanel.add(qrPanel);
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
@@ -218,7 +260,7 @@ public class VehicleEntryFrame extends JDialog {
         closeButton.setFont(new Font("Arial", Font.BOLD, 14));
         closeButton.setPreferredSize(new Dimension(120, 35));
         closeButton.setBackground(new Color(0, 120, 215));
-        closeButton.setForeground(Color.WHITE);
+        closeButton.setForeground(Color.BLACK);
         closeButton.setFocusPainted(false);
         closeButton.addActionListener(e -> successFrame.dispose());
         buttonPanel.add(closeButton);

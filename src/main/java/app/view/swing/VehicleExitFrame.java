@@ -73,7 +73,7 @@ public class VehicleExitFrame extends JDialog {
         processButton.setFont(new Font("Arial", Font.BOLD, 14));
         processButton.setPreferredSize(new Dimension(130, 35));
         processButton.setBackground(new Color(0, 150, 136));
-        processButton.setForeground(Color.WHITE);
+        processButton.setForeground(Color.BLACK);
         processButton.setFocusPainted(false);
         processButton.addActionListener(e -> handleProcess());
 
@@ -132,7 +132,7 @@ public class VehicleExitFrame extends JDialog {
         mainPanel.setBackground(Color.WHITE);
 
         // Header
-        JLabel headerLabel = new JLabel("✓ EXIT PROCESSED", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("EXIT PROCESSED", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(new Color(0, 150, 136));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
@@ -223,7 +223,7 @@ public class VehicleExitFrame extends JDialog {
         closeButton.setFont(new Font("Arial", Font.BOLD, 14));
         closeButton.setPreferredSize(new Dimension(120, 35));
         closeButton.setBackground(new Color(0, 150, 136));
-        closeButton.setForeground(Color.WHITE);
+        closeButton.setForeground(Color.BLACK);
         closeButton.setFocusPainted(false);
         closeButton.addActionListener(e -> successFrame.dispose());
         buttonPanel.add(closeButton);

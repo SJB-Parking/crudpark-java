@@ -52,13 +52,13 @@ public class MainMenuFrame extends JFrame {
         menuPanel.setBackground(new Color(240, 240, 240));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
 
-        JButton vehicleEntryButton = createMenuButton("🚗 Vehicle Entry", new Color(0, 120, 215));
+        JButton vehicleEntryButton = createMenuButton("Vehicle Entry", new Color(0, 120, 215));
         vehicleEntryButton.addActionListener(e -> selectOption("1"));
 
-        JButton vehicleExitButton = createMenuButton("🚪 Vehicle Exit", new Color(0, 150, 136));
+        JButton vehicleExitButton = createMenuButton("Vehicle Exit", new Color(0, 150, 136));
         vehicleExitButton.addActionListener(e -> selectOption("2"));
 
-        JButton exitButton = createMenuButton("❌ Exit System", new Color(200, 50, 50));
+        JButton exitButton = createMenuButton("Exit System", new Color(200, 50, 50));
         exitButton.addActionListener(e -> selectOption("3"));
 
         menuPanel.add(vehicleEntryButton);
@@ -81,7 +81,7 @@ public class MainMenuFrame extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 16));
         button.setPreferredSize(new Dimension(300, 60));
         button.setBackground(bgColor);
-        button.setForeground(Color.WHITE);
+        button.setForeground(Color.BLACK);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
