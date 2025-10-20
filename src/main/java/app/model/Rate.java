@@ -7,11 +7,14 @@ import java.sql.Timestamp;
  */
 public class Rate {
     private int id;
+    private String rateName;
     private double hourlyRate;
     private double fractionRate;
     private Double dailyCap;
+    private int gracePeriodMinutes;
     private Timestamp effectiveFrom;
     private boolean isActive;
+    private String vehicleType;
 
     public Rate() {}
 
@@ -22,6 +25,14 @@ public class Rate {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getRateName() {
+        return rateName;
+    }
+
+    public void setRateName(String rateName) {
+        this.rateName = rateName;
     }
 
     public double getHourlyRate() {
@@ -48,6 +59,14 @@ public class Rate {
         this.dailyCap = dailyCap;
     }
 
+    public int getGracePeriodMinutes() {
+        return gracePeriodMinutes;
+    }
+
+    public void setGracePeriodMinutes(int gracePeriodMinutes) {
+        this.gracePeriodMinutes = gracePeriodMinutes;
+    }
+
     public Timestamp getEffectiveFrom() {
         return effectiveFrom;
     }
@@ -62,5 +81,13 @@ public class Rate {
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public String getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(String vehicleType) {
+        this.vehicleType = vehicleType;
     }
 }

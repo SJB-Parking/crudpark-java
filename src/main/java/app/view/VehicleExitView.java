@@ -3,6 +3,8 @@ package app.view;
 import app.service.ParkingService;
 
 import javax.swing.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Vehicle exit view
@@ -33,6 +35,11 @@ public class VehicleExitView {
             costInfo = String.format("$%.2f", result.getAmount());
         }
         
+        // Format entry and exit datetime: 2025-10-14 09:45 AM
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm a");
+        String formattedEntryTime = dateFormat.format(new Date(result.getTicket().getEntryDatetime().getTime()));
+        String formattedExitTime = dateFormat.format(new Date(result.getExitTime().getTime()));
+        
         String message = String.format(
             "═══════════════════════════════════\n" +
             "          EXIT DETAILS\n" +
@@ -51,8 +58,8 @@ public class VehicleExitView {
             result.getTicket().getFolio(),
             result.getTicket().getLicensePlate(),
             result.getTicket().getVehicleType(),
-            result.getTicket().getEntryDatetime().toString(),
-            result.getExitTime().toString(),
+            formattedEntryTime,
+            formattedExitTime,
             hours, minutes,
             result.getTicket().getTicketType(),
             costInfo

@@ -132,6 +132,7 @@ CREATE TABLE public.rates (
 	effective_from timestamptz NOT NULL,
 	created_at timestamptz NOT NULL,
 	updated_at timestamptz NOT NULL,
+	vehicle_type text DEFAULT ''::text NOT NULL, -- new column for vehicle type
 	CONSTRAINT "PK_rates" PRIMARY KEY (id)
 );
 

@@ -50,7 +50,7 @@ public class TicketDAO {
             throws DataAccessException {
         String sql = "INSERT INTO tickets (folio, vehicle_id, operator_id, subscription_id, " +
                      "entry_datetime, ticket_type, status, qr_code_data, created_at, updated_at) " +
-                     "VALUES (?, ?, ?, ?, NOW(), ?::text, 'OPEN', ?, NOW(), NOW()) " +
+                     "VALUES (?, ?, ?, ?, NOW(), ?, 'OPEN', ?, NOW(), NOW()) " +
                      "RETURNING id, entry_datetime";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -131,6 +131,27 @@ public class TicketDAO {
             
         } catch (SQLException e) {
             throw new DataAccessException("Error finding ticket", e);
+        }
+    }
+
+    /**
+     * Update ticket QR code
+     */
+    public void updateQRCode(Connection conn, int ticketId, String qrCodeData) 
+            throws DataAccessException {
+        String sql = "UPDATE tickets SET qr_code_data = ?, updated_at = NOW() WHERE id = ?";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, qrCodeData);
+            stmt.setInt(2, ticketId);
+            
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DataAccessException("Ticket not found");
+            }
+            
+        } catch (SQLException e) {
+            throw new DataAccessException("Error updating ticket QR code", e);
         }
     }
 

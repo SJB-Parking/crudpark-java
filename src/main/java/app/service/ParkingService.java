@@ -8,6 +8,7 @@ import app.exception.NotFoundException;
 import app.model.Rate;
 import app.model.Ticket;
 import app.model.Vehicle;
+import app.util.QRCodeGenerator;
 
 import java.sql.Connection;
 import java.sql.Timestamp;
@@ -19,7 +20,6 @@ import java.util.regex.Pattern;
 public class ParkingService {
     private static final Pattern CAR_PATTERN = Pattern.compile("^[A-Z]{3}\\d{3}$");
     private static final Pattern MOTORCYCLE_PATTERN = Pattern.compile("^[A-Z]{3}\\d{2}[A-Z]$");
-    private static final int GRACE_PERIOD_MINUTES = 30;
 
     private final VehicleDAO vehicleDAO;
     private final TicketDAO ticketDAO;
@@ -87,15 +87,30 @@ public class ParkingService {
                 );
                 String ticketType = subscriptionId != null ? "Monthly" : "Guest";
                 
-                // Generate folio and QR code
+                // Generate folio
                 String folio = ticketDAO.generateNextFolio(conn);
                 Timestamp now = new Timestamp(System.currentTimeMillis());
-                String qrCodeData = String.format("TICKET:%s|PLATE:%s|DATE:%d", 
-                                                 folio, licensePlate, now.getTime() / 1000);
                 
-                // Create ticket
+                // Create ticket with temporary QR (we need the ticket ID first)
+                String tempQrCodeData = "PENDING";
                 Ticket ticket = ticketDAO.create(conn, folio, vehicle.getId(), operatorId, 
-                                                subscriptionId, ticketType, qrCodeData);
+                                                subscriptionId, ticketType, tempQrCodeData);
+                
+                // Generate QR code content with ticket ID (6-digit formatted: 000001, 000002, etc.)
+                String qrCodeData = String.format("TICKET:%06d|PLATE:%s|DATE:%d", 
+                                                ticket.getId(), licensePlate, now.getTime() / 1000);
+                
+                // Update ticket with final QR code
+                ticketDAO.updateQRCode(conn, ticket.getId(), qrCodeData);
+                ticket.setQrCodeData(qrCodeData);
+                
+                // Save QR code image to file system (backup)
+                try {
+                    QRCodeGenerator.saveQRCodeToFile(qrCodeData, ticket.getId());
+                } catch (Exception e) {
+                    // Log but don't fail - file backup is optional
+                    System.err.println("Warning: Could not save QR code to file: " + e.getMessage());
+                }
                 
                 ticket.setLicensePlate(licensePlate);
                 ticket.setVehicleType(vehicleType);
@@ -150,14 +165,21 @@ public class ParkingService {
                 boolean isFree = false;
                 String freeReason = null;
                 
+                // Get the appropriate rate for this vehicle type
+                Rate rate = rateDAO.findActiveRateByVehicleType(ticket.getVehicleType(), conn);
+                
+                if (rate == null) {
+                    throw new DataAccessException("No active rate found for vehicle type: " + ticket.getVehicleType());
+                }
+                
                 if ("Monthly".equals(ticket.getTicketType())) {
                     isFree = true;
                     freeReason = "Monthly Subscription";
-                } else if (durationMinutes <= GRACE_PERIOD_MINUTES) {
+                } else if (durationMinutes <= rate.getGracePeriodMinutes()) {
                     isFree = true;
-                    freeReason = "Grace Period (first 30 minutes)";
+                    freeReason = String.format("Grace Period (first %d minutes)", rate.getGracePeriodMinutes());
                 } else {
-                    amount = calculateAmount(durationMinutes);
+                    amount = calculateAmount(durationMinutes, rate);
                     
                     // Record payment
                     if (amount > 0) {
@@ -185,16 +207,13 @@ public class ParkingService {
     }
 
     /**
-     * Calculate payment amount based on duration
+     * Calculate payment amount based on duration and rate
+     * @param durationMinutes Total parking duration in minutes
+     * @param rate The rate to apply
+     * @return Amount to charge
      */
-    private double calculateAmount(long durationMinutes) throws DataAccessException {
-        Rate rate = rateDAO.getActiveRate();
-        
-        if (rate == null) {
-            throw new DataAccessException("No active rate found in system");
-        }
-        
-        long chargeableMinutes = durationMinutes - GRACE_PERIOD_MINUTES;
+    private double calculateAmount(long durationMinutes, Rate rate) {
+        long chargeableMinutes = durationMinutes - rate.getGracePeriodMinutes();
         long hours = chargeableMinutes / 60;
         long remainingMinutes = chargeableMinutes % 60;
         
