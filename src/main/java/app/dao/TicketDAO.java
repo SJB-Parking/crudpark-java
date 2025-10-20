@@ -3,6 +3,7 @@ package app.dao;
 import app.database.DatabaseConnection;
 import app.exception.DataAccessException;
 import app.model.Ticket;
+import app.util.Logger;
 
 import java.sql.*;
 
@@ -10,18 +11,23 @@ import java.sql.*;
  * Data Access Object for Ticket entity
  */
 public class TicketDAO {
+    private static final Logger logger = Logger.getLogger(TicketDAO.class);
 
     /**
      * Check if vehicle has an open ticket
      */
     public boolean hasOpenTicket(Connection conn, int vehicleId) throws DataAccessException {
+        logger.debug("Checking open tickets for vehicle ID: {}", vehicleId);
         String sql = "SELECT COUNT(*) FROM tickets WHERE vehicle_id = ? AND status = 'OPEN'";
         
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, vehicleId);
             ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
+            boolean hasOpen = rs.next() && rs.getInt(1) > 0;
+            logger.debug("Vehicle {} has open ticket: {}", vehicleId, hasOpen);
+            return hasOpen;
         } catch (SQLException e) {
+            logger.error("Error checking open tickets for vehicle {}: {}", vehicleId, e.getMessage());
             throw new DataAccessException("Error checking open tickets", e);
         }
     }
@@ -48,6 +54,7 @@ public class TicketDAO {
     public Ticket create(Connection conn, String folio, int vehicleId, int operatorId,
                         Integer subscriptionId, String ticketType, String qrCodeData) 
             throws DataAccessException {
+        logger.info("Creating ticket: {} for vehicle ID {} (Type: {})", folio, vehicleId, ticketType);
         String sql = "INSERT INTO tickets (folio, vehicle_id, operator_id, subscription_id, " +
                      "entry_datetime, ticket_type, status, qr_code_data, created_at, updated_at) " +
                      "VALUES (?, ?, ?, ?, NOW(), ?, 'OPEN', ?, NOW(), NOW()) " +
@@ -76,12 +83,15 @@ public class TicketDAO {
                 ticket.setTicketType(ticketType);
                 ticket.setStatus("OPEN");
                 ticket.setQrCodeData(qrCodeData);
+                logger.info("Ticket created successfully: ID {} - {}", ticket.getId(), folio);
                 return ticket;
             }
             
+            logger.error("Failed to create ticket: {}", folio);
             throw new DataAccessException("Failed to create ticket");
             
         } catch (SQLException e) {
+            logger.error("SQL error creating ticket {}: {}", folio, e.getMessage());
             throw new DataAccessException("Error creating ticket", e);
         }
     }
@@ -90,6 +100,7 @@ public class TicketDAO {
      * Find ticket by ID with vehicle information
      */
     public Ticket findByIdWithVehicle(int ticketId) throws DataAccessException {
+        logger.debug("Finding ticket by ID: {}", ticketId);
         String sql = "SELECT t.id, t.folio, t.vehicle_id, t.operator_id, t.subscription_id, " +
                      "t.entry_datetime, t.exit_datetime, t.ticket_type, t.status, " +
                      "t.parking_duration_minutes, t.qr_code_data, " +
@@ -124,12 +135,15 @@ public class TicketDAO {
                 ticket.setQrCodeData(rs.getString("qr_code_data"));
                 ticket.setLicensePlate(rs.getString("license_plate"));
                 ticket.setVehicleType(rs.getString("vehicle_type"));
+                logger.debug("Ticket found: {} - {} ({})", ticketId, ticket.getFolio(), ticket.getStatus());
                 return ticket;
             }
             
+            logger.warn("Ticket not found: {}", ticketId);
             return null;
             
         } catch (SQLException e) {
+            logger.error("Error finding ticket {}: {}", ticketId, e.getMessage());
             throw new DataAccessException("Error finding ticket", e);
         }
     }

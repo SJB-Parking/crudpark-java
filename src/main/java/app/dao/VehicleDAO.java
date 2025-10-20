@@ -3,6 +3,7 @@ package app.dao;
 import app.database.DatabaseConnection;
 import app.exception.DataAccessException;
 import app.model.Vehicle;
+import app.util.Logger;
 
 import java.sql.*;
 
@@ -10,11 +11,13 @@ import java.sql.*;
  * Data Access Object for Vehicle entity
  */
 public class VehicleDAO {
+    private static final Logger logger = Logger.getLogger(VehicleDAO.class);
 
     /**
      * Find vehicle by license plate
      */
     public Vehicle findByLicensePlate(String licensePlate) throws DataAccessException {
+        logger.debug("Finding vehicle by license plate: {}", licensePlate);
         String sql = "SELECT id, license_plate, vehicle_type, created_at, updated_at " +
                      "FROM vehicles WHERE license_plate = ?";
         
@@ -29,12 +32,15 @@ public class VehicleDAO {
                 vehicle.setId(rs.getInt("id"));
                 vehicle.setLicensePlate(rs.getString("license_plate"));
                 vehicle.setVehicleType(rs.getString("vehicle_type"));
+                logger.debug("Vehicle found: {} - {} (ID: {})", licensePlate, vehicle.getVehicleType(), vehicle.getId());
                 return vehicle;
             }
             
+            logger.debug("Vehicle not found: {}", licensePlate);
             return null;
             
         } catch (SQLException e) {
+            logger.error("Error finding vehicle {}: {}", licensePlate, e.getMessage());
             throw new DataAccessException("Error accessing vehicle data", e);
         }
     }
@@ -44,6 +50,7 @@ public class VehicleDAO {
      */
     public Vehicle create(Connection conn, String licensePlate, String vehicleType) 
             throws DataAccessException {
+        logger.info("Creating new vehicle: {} (Type: {})", licensePlate, vehicleType);
         String sql = "INSERT INTO vehicles (license_plate, vehicle_type, created_at, updated_at) " +
                      "VALUES (?, ?::text, NOW(), NOW()) RETURNING id";
         
@@ -57,12 +64,15 @@ public class VehicleDAO {
                 vehicle.setId(rs.getInt(1));
                 vehicle.setLicensePlate(licensePlate);
                 vehicle.setVehicleType(vehicleType);
+                logger.info("Vehicle created: {} - ID {}", licensePlate, vehicle.getId());
                 return vehicle;
             }
             
+            logger.error("Failed to create vehicle: {}", licensePlate);
             throw new DataAccessException("Failed to create vehicle");
             
         } catch (SQLException e) {
+            logger.error("SQL error creating vehicle {}: {}", licensePlate, e.getMessage());
             throw new DataAccessException("Error creating vehicle", e);
         }
     }

@@ -4,12 +4,14 @@ import app.dao.OperatorDAO;
 import app.exception.AuthenticationException;
 import app.exception.DataAccessException;
 import app.model.Operator;
+import app.util.Logger;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 /**
  * Authentication service
  */
 public class AuthService {
+    private static final Logger logger = Logger.getLogger(AuthService.class);
     private final OperatorDAO operatorDAO;
 
     public AuthService(OperatorDAO operatorDAO) {
@@ -21,14 +23,17 @@ public class AuthService {
      */
     public Operator login(String email, String password) 
             throws AuthenticationException, DataAccessException {
+        logger.info("Login attempt for: {}", email);
         
         Operator operator = operatorDAO.findByEmail(email);
         
         if (operator == null) {
+            logger.warn("Login failed - operator not found: {}", email);
             throw new AuthenticationException("Invalid email or password");
         }
         
         if (!operator.isActive()) {
+            logger.warn("Login failed - inactive account: {} ({})", email, operator.getFullName());
             throw new AuthenticationException("Operator account is inactive");
         }
         
@@ -38,9 +43,11 @@ public class AuthService {
         );
         
         if (!result.verified) {
+            logger.warn("Login failed - invalid password: {}", email);
             throw new AuthenticationException("Invalid email or password");
         }
         
+        logger.info("Login successful: {} ({})", email, operator.getFullName());
         return operator;
     }
 

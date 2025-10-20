@@ -8,6 +8,7 @@ import app.exception.NotFoundException;
 import app.model.Rate;
 import app.model.Ticket;
 import app.model.Vehicle;
+import app.util.Logger;
 import app.util.QRCodeGenerator;
 
 import java.sql.Connection;
@@ -18,6 +19,7 @@ import java.util.regex.Pattern;
  * Parking service - handles vehicle entry and exit
  */
 public class ParkingService {
+    private static final Logger logger = Logger.getLogger(ParkingService.class);
     private static final Pattern CAR_PATTERN = Pattern.compile("^[A-Z]{3}\\d{3}$");
     private static final Pattern MOTORCYCLE_PATTERN = Pattern.compile("^[A-Z]{3}\\d{2}[A-Z]$");
 
@@ -87,6 +89,12 @@ public class ParkingService {
                 );
                 String ticketType = subscriptionId != null ? "Monthly" : "Guest";
                 
+                if (subscriptionId != null) {
+                    logger.info("Active subscription found for {}: Subscription ID {}", licensePlate, subscriptionId);
+                } else {
+                    logger.debug("No active subscription for {}, ticket type: Guest", licensePlate);
+                }
+                
                 // Generate folio
                 String folio = ticketDAO.generateNextFolio(conn);
                 Timestamp now = new Timestamp(System.currentTimeMillis());
@@ -137,6 +145,7 @@ public class ParkingService {
      */
     public ExitResult processExit(int ticketId, int operatorId) 
             throws NotFoundException, BusinessException, DataAccessException {
+        logger.info("Processing vehicle exit: Ticket ID {} (Operator ID: {})", ticketId, operatorId);
         
         try (Connection conn = DatabaseConnection.getConnection()) {
             conn.setAutoCommit(false);
@@ -146,10 +155,15 @@ public class ParkingService {
                 Ticket ticket = ticketDAO.findByIdWithVehicle(ticketId);
                 
                 if (ticket == null) {
+                    logger.warn("Ticket not found: ID {}", ticketId);
                     throw new NotFoundException("Ticket not found");
                 }
                 
+                logger.debug("Ticket found: {} - Plate: {} (Status: {})", 
+                            ticketId, ticket.getLicensePlate(), ticket.getStatus());
+                
                 if (!"OPEN".equals(ticket.getStatus())) {
+                    logger.warn("Attempted exit with closed ticket: ID {}", ticketId);
                     throw new BusinessException("Ticket is already closed");
                 }
                 
@@ -169,30 +183,45 @@ public class ParkingService {
                 Rate rate = rateDAO.findActiveRateByVehicleType(ticket.getVehicleType(), conn);
                 
                 if (rate == null) {
+                    logger.error("No active rate found for vehicle type: {}", ticket.getVehicleType());
                     throw new DataAccessException("No active rate found for vehicle type: " + ticket.getVehicleType());
                 }
+                
+                logger.debug("Rate applied: {} (ID: {}) for vehicle type: {}", 
+                            rate.getRateName(), rate.getId(), ticket.getVehicleType());
                 
                 if ("Monthly".equals(ticket.getTicketType())) {
                     isFree = true;
                     freeReason = "Monthly Subscription";
+                    logger.info("Exit free - Monthly subscription: {}", ticket.getLicensePlate());
                 } else if (durationMinutes <= rate.getGracePeriodMinutes()) {
                     isFree = true;
                     freeReason = String.format("Grace Period (first %d minutes)", rate.getGracePeriodMinutes());
+                    logger.info("Exit free - Grace period: {} (Duration: {}min)", 
+                               ticket.getLicensePlate(), durationMinutes);
                 } else {
                     amount = calculateAmount(durationMinutes, rate);
+                    logger.debug("Payment calculated: ${} for {} (Duration: {}min)", 
+                                amount, ticket.getLicensePlate(), durationMinutes);
                     
                     // Record payment
                     if (amount > 0) {
                         paymentDAO.create(conn, ticketId, operatorId, amount, "Cash");
+                        logger.info("Payment recorded: ${} for {} (Ticket: {})", 
+                                   amount, ticket.getLicensePlate(), ticketId);
                     }
                 }
                 
                 conn.commit();
                 
+                logger.info("Vehicle exit successful: {} - Ticket ID: {} (Amount: ${}, Free: {})", 
+                           ticket.getLicensePlate(), ticketId, amount, isFree);
+                
                 return new ExitResult(ticket, now, (int) durationMinutes, amount, isFree, freeReason);
                 
             } catch (NotFoundException | BusinessException | DataAccessException e) {
                 conn.rollback();
+                logger.error("Vehicle exit failed for Ticket ID {}: {}", ticketId, e.getMessage());
                 throw e;
             } catch (Exception e) {
                 conn.rollback();

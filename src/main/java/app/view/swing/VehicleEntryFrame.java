@@ -1,15 +1,17 @@
 package app.view.swing;
 
 import app.model.Ticket;
-import app.util.TicketPrinter;
+import app.util.QRCodeGenerator;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 /**
- * Vehicle entry window
+ * Vehicle entry dialog (modal)
+ * Changed from JFrame to JDialog to support modal behavior without threads
  */
-public class VehicleEntryFrame extends JFrame {
+public class VehicleEntryFrame extends JDialog {
     private JTextField licensePlateField;
     private JButton registerButton;
     private JButton cancelButton;
@@ -18,12 +20,12 @@ public class VehicleEntryFrame extends JFrame {
     private boolean registered = false;
 
     public VehicleEntryFrame() {
+        super((Frame) null, "CrudPark - Vehicle Entry", true); // modal dialog
         initComponents();
     }
 
     private void initComponents() {
-        setTitle("CrudPark - Vehicle Entry");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(500, 280);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -126,25 +128,104 @@ public class VehicleEntryFrame extends JFrame {
         return registered;
     }
 
-    public void showWindow() {
-        setVisible(true);
-    }
-
     /**
-     * Print entry ticket to selected printer
+     * Show entry success in a new window with ticket details and QR code
      */
     public static void showEntrySuccess(Ticket ticket) {
-        // Show confirmation dialog
-        int result = JOptionPane.showConfirmDialog(null,
-            String.format("Entry registered successfully!\n\nTicket ID: %06d\nLicense Plate: %s\n\nDo you want to print the ticket?",
-                ticket.getId(), ticket.getLicensePlate()),
-            "Entry Registered",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.INFORMATION_MESSAGE);
-        
-        if (result == JOptionPane.YES_OPTION) {
-            // Print the ticket
-            TicketPrinter.printEntryTicket(ticket);
+        JFrame successFrame = new JFrame("Entry Registered Successfully");
+        successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        successFrame.setSize(500, 650);
+        successFrame.setLocationRelativeTo(null);
+        successFrame.setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        mainPanel.setBackground(Color.WHITE);
+
+        // Header
+        JLabel headerLabel = new JLabel("✓ ENTRY REGISTERED", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerLabel.setForeground(new Color(0, 120, 215));
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
+
+        // Content panel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+
+        // Format entry datetime
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm a");
+        String formattedEntryTime = dateFormat.format(new java.util.Date(ticket.getEntryDatetime().getTime()));
+
+        // Ticket info
+        String ticketInfo = String.format(
+            "<html><div style='font-family: Arial; padding: 20px; background-color: #f5f5f5; border-radius: 10px;'>" +
+            "<table style='width: 100%%;'>" +
+            "<tr><td><b>Ticket ID:</b></td><td>%06d</td></tr>" +
+            "<tr><td><b>License Plate:</b></td><td><span style='font-size: 16px; color: #0078D7;'>%s</span></td></tr>" +
+            "<tr><td><b>Vehicle Type:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Ticket Type:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Entry Time:</b></td><td>%s</td></tr>" +
+            "</table>" +
+            "</div></html>",
+            ticket.getId(),
+            ticket.getLicensePlate(),
+            ticket.getVehicleType(),
+            ticket.getTicketType(),
+            formattedEntryTime
+        );
+
+        JLabel infoLabel = new JLabel(ticketInfo);
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(infoLabel);
+
+        // Add spacing
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // QR Code
+        try {
+            BufferedImage qrImage = QRCodeGenerator.generateQRCodeImage(ticket.getQrCodeData());
+            JLabel qrLabel = new JLabel(new ImageIcon(qrImage));
+            qrLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            qrLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(Color.GRAY, 2),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10)
+            ));
+            contentPanel.add(qrLabel);
+
+            // QR description
+            contentPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+            JLabel qrDescription = new JLabel("Scan QR code for quick exit");
+            qrDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
+            qrDescription.setFont(new Font("Arial", Font.ITALIC, 12));
+            qrDescription.setForeground(Color.GRAY);
+            contentPanel.add(qrDescription);
+        } catch (Exception e) {
+            JLabel errorLabel = new JLabel("Error generating QR code: " + e.getMessage());
+            errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            errorLabel.setForeground(Color.RED);
+            contentPanel.add(errorLabel);
         }
+
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        // Close button
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.WHITE);
+        JButton closeButton = new JButton("Close");
+        closeButton.setFont(new Font("Arial", Font.BOLD, 14));
+        closeButton.setPreferredSize(new Dimension(120, 35));
+        closeButton.setBackground(new Color(0, 120, 215));
+        closeButton.setForeground(Color.WHITE);
+        closeButton.setFocusPainted(false);
+        closeButton.addActionListener(e -> successFrame.dispose());
+        buttonPanel.add(closeButton);
+
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        successFrame.add(mainPanel);
+        successFrame.setVisible(true);
     }
 }

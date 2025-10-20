@@ -4,9 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Login window with email and password fields
+ * Login dialog (modal) with email and password fields
+ * Changed from JFrame to JDialog to support modal behavior without threads
  */
-public class LoginFrame extends JFrame {
+public class LoginFrame extends JDialog {
     private JTextField emailField;
     private JPasswordField passwordField;
     private JButton loginButton;
@@ -17,12 +18,12 @@ public class LoginFrame extends JFrame {
     private boolean loginSuccessful = false;
 
     public LoginFrame() {
+        super((Frame) null, "CrudPark - Login", true); // modal dialog
         initComponents();
     }
 
     private void initComponents() {
-        setTitle("CrudPark - Login");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(400, 250);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -121,9 +122,5 @@ public class LoginFrame extends JFrame {
 
     public boolean isLoginSuccessful() {
         return loginSuccessful;
-    }
-
-    public void showWindow() {
-        setVisible(true);
     }
 }

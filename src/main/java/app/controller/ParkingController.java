@@ -3,7 +3,6 @@ package app.controller;
 import app.exception.BusinessException;
 import app.exception.DataAccessException;
 import app.exception.NotFoundException;
-import app.exception.ValidationException;
 import app.model.Ticket;
 import app.service.ParkingService;
 
@@ -18,95 +17,80 @@ public class ParkingController {
     }
 
     /**
-     * Process vehicle entry
+     * Process vehicle entry - returns EntryResult instead of throwing exceptions
+     * Controller handles all exceptions and converts them to result objects
      */
-    public Ticket processEntry(String licensePlate, int operatorId) 
-            throws ValidationException, BusinessException, DataAccessException {
-        
-        // Validate license plate
-        if (licensePlate == null || licensePlate.trim().isEmpty()) {
-            throw new ValidationException("License plate cannot be empty");
-        }
-        
-        licensePlate = licensePlate.trim().toUpperCase();
-        
-        if (licensePlate.length() < 6 || licensePlate.length() > 6) {
-            throw new ValidationException("License plate must be 6 characters");
-        }
-        
-        // Validate operator ID
-        if (operatorId <= 0) {
-            throw new ValidationException("Invalid operator ID");
-        }
-        
-        // Call service
+    public EntryResult processEntry(String licensePlate, int operatorId) {
         try {
-            return parkingService.processEntry(licensePlate, operatorId);
+            // Validate license plate
+            if (licensePlate == null || licensePlate.trim().isEmpty()) {
+                return EntryResult.validationError("License plate cannot be empty");
+            }
+            
+            licensePlate = licensePlate.trim().toUpperCase();
+            
+            if (licensePlate.length() != 6) {
+                return EntryResult.validationError("License plate must be 6 characters");
+            }
+            
+            // Validate operator ID
+            if (operatorId <= 0) {
+                return EntryResult.validationError("Invalid operator ID");
+            }
+            
+            // Call service
+            Ticket ticket = parkingService.processEntry(licensePlate, operatorId);
+            return EntryResult.success(ticket);
+            
         } catch (BusinessException e) {
-            throw e;
+            return EntryResult.businessError(e.getMessage());
         } catch (DataAccessException e) {
-            throw new DataAccessException("Error processing vehicle entry: " + e.getMessage());
+            return EntryResult.dataAccessError("Error processing vehicle entry: " + e.getMessage());
+        } catch (Exception e) {
+            return EntryResult.dataAccessError("Unexpected error: " + e.getMessage());
         }
     }
 
     /**
-     * Process vehicle exit
+     * Process vehicle exit - returns ExitResult instead of throwing exceptions
+     * Controller handles all exceptions and converts them to result objects
      */
-    public ParkingService.ExitResult processExit(String ticketIdStr, int operatorId) 
-            throws ValidationException, NotFoundException, BusinessException, DataAccessException {
-        
-        // Validate ticket ID string
-        if (ticketIdStr == null || ticketIdStr.trim().isEmpty()) {
-            throw new ValidationException("Ticket ID cannot be empty");
-        }
-        
-        // Parse and validate ticket ID
-        int ticketId;
+    public ExitResult processExit(String ticketIdStr, int operatorId) {
         try {
-            ticketId = Integer.parseInt(ticketIdStr.trim());
-        } catch (NumberFormatException e) {
-            throw new ValidationException("Ticket ID must be a valid number");
-        }
-        
-        if (ticketId <= 0) {
-            throw new ValidationException("Ticket ID must be greater than 0");
-        }
-        
-        // Validate operator ID
-        if (operatorId <= 0) {
-            throw new ValidationException("Invalid operator ID");
-        }
-        
-        // Call service
-        try {
-            return parkingService.processExit(ticketId, operatorId);
+            // Validate ticket ID string
+            if (ticketIdStr == null || ticketIdStr.trim().isEmpty()) {
+                return ExitResult.validationError("Ticket ID cannot be empty");
+            }
+            
+            // Parse and validate ticket ID
+            int ticketId;
+            try {
+                ticketId = Integer.parseInt(ticketIdStr.trim());
+            } catch (NumberFormatException e) {
+                return ExitResult.validationError("Ticket ID must be a valid number");
+            }
+            
+            if (ticketId <= 0) {
+                return ExitResult.validationError("Ticket ID must be greater than 0");
+            }
+            
+            // Validate operator ID
+            if (operatorId <= 0) {
+                return ExitResult.validationError("Invalid operator ID");
+            }
+            
+            // Call service
+            ParkingService.ExitResult result = parkingService.processExit(ticketId, operatorId);
+            return ExitResult.success(result);
+            
         } catch (NotFoundException e) {
-            throw e;
+            return ExitResult.notFoundError(e.getMessage());
         } catch (BusinessException e) {
-            throw e;
+            return ExitResult.businessError(e.getMessage());
         } catch (DataAccessException e) {
-            throw new DataAccessException("Error processing vehicle exit: " + e.getMessage());
+            return ExitResult.dataAccessError("Error processing vehicle exit: " + e.getMessage());
+        } catch (Exception e) {
+            return ExitResult.dataAccessError("Unexpected error: " + e.getMessage());
         }
-    }
-
-    /**
-     * Detect vehicle type (for validation)
-     */
-    public String detectVehicleType(String licensePlate) throws ValidationException {
-        if (licensePlate == null || licensePlate.trim().isEmpty()) {
-            throw new ValidationException("License plate cannot be empty");
-        }
-        
-        String vehicleType = parkingService.detectVehicleType(licensePlate.trim());
-        
-        if (vehicleType == null) {
-            throw new ValidationException(
-                "Invalid license plate format.\n" +
-                "Car: 3 letters + 3 numbers (e.g., ABC123)\n" +
-                "Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D)"
-            );
-        }
-        
-        return vehicleType;
     }
 }

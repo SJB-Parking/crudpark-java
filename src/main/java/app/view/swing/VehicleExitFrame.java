@@ -1,15 +1,15 @@
 package app.view.swing;
 
 import app.service.ParkingService;
-import app.util.TicketPrinter;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * Vehicle exit window
+ * Vehicle exit dialog (modal)
+ * Changed from JFrame to JDialog to support modal behavior without threads
  */
-public class VehicleExitFrame extends JFrame {
+public class VehicleExitFrame extends JDialog {
     private JTextField ticketIdField;
     private JButton processButton;
     private JButton cancelButton;
@@ -18,12 +18,12 @@ public class VehicleExitFrame extends JFrame {
     private boolean processed = false;
 
     public VehicleExitFrame() {
+        super((Frame) null, "CrudPark - Vehicle Exit", true); // modal dialog
         initComponents();
     }
 
     private void initComponents() {
-        setTitle("CrudPark - Vehicle Exit");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setSize(450, 220);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -116,41 +116,121 @@ public class VehicleExitFrame extends JFrame {
         return processed;
     }
 
-    public void showWindow() {
-        setVisible(true);
-    }
-
     /**
-     * Print exit receipt to selected printer
+     * Show exit success in a new window with payment details
      */
     public static void showExitSuccess(ParkingService.ExitResult result) {
-        // Format the payment info
-        String paymentInfo;
-        if (result.isFree()) {
-            paymentInfo = String.format("FREE (%s)", result.getFreeReason());
-        } else {
-            paymentInfo = String.format("$%.2f", result.getAmount());
-        }
-        
+        JFrame successFrame = new JFrame("Exit Processed Successfully");
+        successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        successFrame.setSize(500, 550);
+        successFrame.setLocationRelativeTo(null);
+        successFrame.setResizable(false);
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 30, 20, 30));
+        mainPanel.setBackground(Color.WHITE);
+
+        // Header
+        JLabel headerLabel = new JLabel("✓ EXIT PROCESSED", SwingConstants.CENTER);
+        headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        headerLabel.setForeground(new Color(0, 150, 136));
+        headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+        mainPanel.add(headerLabel, BorderLayout.NORTH);
+
+        // Content panel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(Color.WHITE);
+
+        // Format entry and exit datetime
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd hh:mm a");
+        String formattedEntryTime = dateFormat.format(new java.util.Date(result.getTicket().getEntryDatetime().getTime()));
+        String formattedExitTime = dateFormat.format(new java.util.Date(result.getExitTime().getTime()));
+
         // Calculate duration
         long hours = result.getDurationMinutes() / 60;
         long minutes = result.getDurationMinutes() % 60;
-        
-        // Show confirmation dialog
-        int confirmResult = JOptionPane.showConfirmDialog(null,
-            String.format("Exit processed successfully!\n\nTicket ID: %06d\nLicense Plate: %s\nDuration: %d hours %d minutes\nAmount: %s\n\nDo you want to print the receipt?",
-                result.getTicket().getId(), 
-                result.getTicket().getLicensePlate(),
-                hours, 
-                minutes,
-                paymentInfo),
-            "Exit Processed",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.INFORMATION_MESSAGE);
-        
-        if (confirmResult == JOptionPane.YES_OPTION) {
-            // Print the receipt
-            TicketPrinter.printExitTicket(result);
+
+        // Cost info
+        String costInfo;
+        Color costColor;
+        if (result.isFree()) {
+            costInfo = String.format("FREE (%s)", result.getFreeReason());
+            costColor = new Color(0, 150, 0);
+        } else {
+            costInfo = String.format("$%.2f", result.getAmount());
+            costColor = new Color(200, 0, 0);
         }
+
+        // Ticket info with important details
+        String exitInfo = String.format(
+            "<html><div style='font-family: Arial; padding: 20px; background-color: #f5f5f5; border-radius: 10px;'>" +
+            "<table style='width: 100%%;'>" +
+            "<tr><td><b>License Plate:</b></td><td><span style='font-size: 16px; color: #009688;'>%s</span></td></tr>" +
+            "<tr><td colspan='2'><hr></td></tr>" +
+            "<tr><td><b>Entry Time:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Exit Time:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Duration:</b></td><td><b>%d hours %d minutes</b></td></tr>" +
+            "</table>" +
+            "</div></html>",
+            result.getTicket().getLicensePlate(),
+            formattedEntryTime,
+            formattedExitTime,
+            hours, minutes
+        );
+
+        JLabel infoLabel = new JLabel(exitInfo);
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        contentPanel.add(infoLabel);
+
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // Payment info panel with better visibility
+        JPanel paymentPanel = new JPanel();
+        paymentPanel.setLayout(new BorderLayout(10, 10));
+        paymentPanel.setBackground(new Color(255, 255, 240));
+        paymentPanel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(costColor, 3),
+            BorderFactory.createEmptyBorder(15, 20, 15, 20)
+        ));
+        paymentPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Set both preferred and maximum size for better rendering
+        Dimension panelSize = new Dimension(400, 120);
+        paymentPanel.setPreferredSize(panelSize);
+        paymentPanel.setMaximumSize(panelSize);
+        paymentPanel.setMinimumSize(panelSize);
+
+        JLabel paymentLabel = new JLabel("TOTAL TO PAY", SwingConstants.CENTER);
+        paymentLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        paymentLabel.setForeground(new Color(60, 60, 60));
+        paymentPanel.add(paymentLabel, BorderLayout.NORTH);
+
+        JLabel amountLabel = new JLabel(costInfo, SwingConstants.CENTER);
+        amountLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        amountLabel.setForeground(costColor);
+        paymentPanel.add(amountLabel, BorderLayout.CENTER);
+
+        contentPanel.add(paymentPanel);
+
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+
+        // Close button only
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(Color.WHITE);
+        JButton closeButton = new JButton("Close");
+        closeButton.setFont(new Font("Arial", Font.BOLD, 14));
+        closeButton.setPreferredSize(new Dimension(120, 35));
+        closeButton.setBackground(new Color(0, 150, 136));
+        closeButton.setForeground(Color.WHITE);
+        closeButton.setFocusPainted(false);
+        closeButton.addActionListener(e -> successFrame.dispose());
+        buttonPanel.add(closeButton);
+
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        successFrame.add(mainPanel);
+        successFrame.setVisible(true);
     }
 }

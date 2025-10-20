@@ -1,75 +1,39 @@
 package app.controller;
 
-import app.exception.BusinessException;
-import app.exception.DataAccessException;
-import app.exception.NotFoundException;
-import app.exception.ValidationException;
-import app.service.ParkingService;
-import app.view.swing.VehicleExitFrame;
-
-import javax.swing.*;
+import app.util.Logger;
 
 /**
  * Swing vehicle exit controller
+ * This controller has NO UI logic - it only coordinates between view and business logic
  */
 public class SwingVehicleExitController {
+    private static final Logger logger = Logger.getLogger(SwingVehicleExitController.class);
     private final ParkingController parkingController;
     private final int operatorId;
 
-    public SwingVehicleExitController(ParkingService parkingService,
-                                     ParkingController parkingController,
-                                     int operatorId) {
+    public SwingVehicleExitController(ParkingController parkingController, int operatorId) {
         this.parkingController = parkingController;
         this.operatorId = operatorId;
     }
 
     /**
-     * Handle vehicle exit with Swing window
+     * Process vehicle exit request - NO UI logic here
+     * Returns ExitResult for the view to handle
      */
-    public void processExit() {
-        try {
-            VehicleExitFrame exitFrame = new VehicleExitFrame();
-            exitFrame.showWindow();
-            
-            // Wait for window to close
-            while (exitFrame.isVisible()) {
-                Thread.sleep(100);
-            }
-            
-            if (!exitFrame.isProcessed()) {
-                return; // User cancelled
-            }
-            
-            String ticketIdStr = exitFrame.getTicketId();
-            
-            // Process exit using parking controller
-            ParkingService.ExitResult result = parkingController.processExit(ticketIdStr, operatorId);
-            
-            // Show success window with payment details
-            VehicleExitFrame.showExitSuccess(result);
-            
-        } catch (ValidationException e) {
-            JOptionPane.showMessageDialog(null,
-                "Validation Error: " + e.getMessage(),
-                "Exit Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (NotFoundException e) {
-            JOptionPane.showMessageDialog(null,
-                "Not Found: " + e.getMessage(),
-                "Exit Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (BusinessException e) {
-            JOptionPane.showMessageDialog(null,
-                "Business Error: " + e.getMessage(),
-                "Exit Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(null,
-                "Database Error: " + e.getMessage(),
-                "Exit Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+    public ExitResult processExit(String ticketId) {
+        logger.info("Processing vehicle exit: Ticket {} (Operator ID: {})", ticketId, operatorId);
+        ExitResult result = parkingController.processExit(ticketId, operatorId);
+        
+        if (result.isSuccess()) {
+            logger.info("Exit successful - Amount: ${}", result.getExitResult().getAmount());
+        } else {
+            logger.warn("Exit failed: {} ({})", result.getErrorMessage(), result.getErrorType());
         }
+        
+        return result;
+    }
+
+    public int getOperatorId() {
+        return operatorId;
     }
 }

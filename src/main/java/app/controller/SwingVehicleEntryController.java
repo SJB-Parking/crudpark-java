@@ -1,70 +1,40 @@
 package app.controller;
 
-import app.exception.BusinessException;
-import app.exception.DataAccessException;
-import app.exception.ValidationException;
-import app.model.Ticket;
-import app.service.ParkingService;
-import app.view.swing.VehicleEntryFrame;
-
-import javax.swing.*;
+import app.util.Logger;
 
 /**
  * Swing vehicle entry controller
+ * This controller has NO UI logic - it only coordinates between view and business logic
  */
 public class SwingVehicleEntryController {
+    private static final Logger logger = Logger.getLogger(SwingVehicleEntryController.class);
     private final ParkingController parkingController;
     private final int operatorId;
 
-    public SwingVehicleEntryController(ParkingService parkingService, 
-                                      ParkingController parkingController,
-                                      int operatorId) {
+    public SwingVehicleEntryController(ParkingController parkingController, int operatorId) {
         this.parkingController = parkingController;
         this.operatorId = operatorId;
     }
 
     /**
-     * Handle vehicle entry with Swing window
+     * Process vehicle entry request - NO UI logic here
+     * Returns EntryResult for the view to handle
      */
-    public void processEntry() {
-        try {
-            VehicleEntryFrame entryFrame = new VehicleEntryFrame();
-            entryFrame.showWindow();
-            
-            // Wait for window to close
-            while (entryFrame.isVisible()) {
-                Thread.sleep(100);
-            }
-            
-            if (!entryFrame.isRegistered()) {
-                return; // User cancelled
-            }
-            
-            String licensePlate = entryFrame.getLicensePlate();
-            
-            // Process entry using parking controller
-            Ticket ticket = parkingController.processEntry(licensePlate, operatorId);
-            
-            // Show success window with QR code
-            VehicleEntryFrame.showEntrySuccess(ticket);
-            
-        } catch (ValidationException e) {
-            JOptionPane.showMessageDialog(null,
-                "Validation Error: " + e.getMessage(),
-                "Entry Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (BusinessException e) {
-            JOptionPane.showMessageDialog(null,
-                "Business Error: " + e.getMessage(),
-                "Entry Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (DataAccessException e) {
-            JOptionPane.showMessageDialog(null,
-                "Database Error: " + e.getMessage(),
-                "Entry Error",
-                JOptionPane.ERROR_MESSAGE);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+    public EntryResult processEntry(String licensePlate) {
+        logger.info("Processing vehicle entry: {} (Operator ID: {})", licensePlate, operatorId);
+        EntryResult result = parkingController.processEntry(licensePlate, operatorId);
+        
+        if (result.isSuccess()) {
+            logger.info("Entry successful - Ticket: {} ({})", 
+                       result.getTicket().getFolio(), result.getTicket().getLicensePlate());
+        } else {
+            logger.warn("Entry failed: {} ({})", result.getErrorMessage(), result.getErrorType());
         }
+        
+        return result;
+    }
+
+    public int getOperatorId() {
+        return operatorId;
     }
 }

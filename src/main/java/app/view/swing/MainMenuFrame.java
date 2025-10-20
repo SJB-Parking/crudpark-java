@@ -101,7 +101,7 @@ public class MainMenuFrame extends JFrame {
 
     private void selectOption(String option) {
         selectedOption = option;
-        setVisible(false);
+        dispose(); // Close and cleanup the window
     }
 
     public String getSelectedOption() {
