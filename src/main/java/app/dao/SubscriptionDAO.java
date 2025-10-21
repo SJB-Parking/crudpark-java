@@ -8,13 +8,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data Access Object for Subscription entity
+ * Implementation of ISubscriptionDAO
  */
-public class SubscriptionDAO {
+public class SubscriptionDAO implements ISubscriptionDAO {
 
-    /**
-     * Find active subscription for a vehicle
-     */
+    @Override
     public Integer findActiveSubscriptionByVehicleId(Connection conn, int vehicleId) 
             throws DataAccessException {
         String sql = "SELECT ms.id FROM monthly_subscriptions ms " +

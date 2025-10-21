@@ -8,14 +8,12 @@ import app.util.Logger;
 import java.sql.*;
 
 /**
- * Data Access Object for Ticket entity
+ * Implementation of ITicketDAO
  */
-public class TicketDAO {
+public class TicketDAO implements ITicketDAO {
     private static final Logger logger = Logger.getLogger(TicketDAO.class);
 
-    /**
-     * Check if vehicle has an open ticket
-     */
+    @Override
     public boolean hasOpenTicket(Connection conn, int vehicleId) throws DataAccessException {
         logger.debug("Checking open tickets for vehicle ID: {}", vehicleId);
         String sql = "SELECT COUNT(*) FROM tickets WHERE vehicle_id = ? AND status = 'OPEN'";
@@ -32,9 +30,7 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Generate next folio number
-     */
+    @Override
     public String generateNextFolio(Connection conn) throws DataAccessException {
         String sql = "SELECT MAX(CAST(SUBSTRING(folio FROM 4) AS INTEGER)) " +
                      "FROM tickets WHERE folio LIKE 'TKT%'";
@@ -48,9 +44,7 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Create a new ticket
-     */
+    @Override
     public Ticket create(Connection conn, String folio, int vehicleId, int operatorId,
                         Integer subscriptionId, String ticketType, String qrCodeData) 
             throws DataAccessException {
@@ -96,9 +90,7 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Find ticket by ID with vehicle information
-     */
+    @Override
     public Ticket findByIdWithVehicle(int ticketId) throws DataAccessException {
         logger.debug("Finding ticket by ID: {}", ticketId);
         String sql = "SELECT t.id, t.folio, t.vehicle_id, t.operator_id, t.subscription_id, " +
@@ -148,9 +140,7 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Find open ticket by license plate
-     */
+    @Override
     public Ticket findOpenTicketByPlate(Connection conn, String licensePlate) throws DataAccessException {
         logger.debug("Finding open ticket for plate: {}", licensePlate);
         String sql = "SELECT t.id, t.folio, t.vehicle_id, t.operator_id, t.subscription_id, " +
@@ -199,9 +189,7 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Update ticket QR code
-     */
+    @Override
     public void updateQRCode(Connection conn, int ticketId, String qrCodeData) 
             throws DataAccessException {
         String sql = "UPDATE tickets SET qr_code_data = ?, updated_at = NOW() WHERE id = ?";
@@ -220,10 +208,8 @@ public class TicketDAO {
         }
     }
 
-    /**
-     * Update ticket exit information
-     */
-    public void updateExit(Connection conn, int ticketId, Timestamp exitTime, int durationMinutes) 
+    @Override
+    public void updateExit(Connection conn, int ticketId, Timestamp exitTime, int durationMinutes)
             throws DataAccessException {
         String sql = "UPDATE tickets SET exit_datetime = ?, parking_duration_minutes = ?, " +
                      "status = 'CLOSED', updated_at = NOW() WHERE id = ?";

@@ -10,13 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data Access Object for Operator entity
+ * Implementation of IOperatorDAO
  */
-public class OperatorDAO {
+public class OperatorDAO implements IOperatorDAO {
 
-    /**
-     * Find operator by email
-     */
+    @Override
     public Operator findByEmail(String email) throws DataAccessException {
         String sql = "SELECT id, full_name, email, username, password_hash, is_active " +
                      "FROM operators WHERE email = ?";
@@ -45,9 +43,7 @@ public class OperatorDAO {
         }
     }
 
-    /**
-     * Find operator by ID
-     */
+    @Override
     public Operator findById(int id) throws DataAccessException {
         String sql = "SELECT id, full_name, email, username, is_active " +
                      "FROM operators WHERE id = ?";
