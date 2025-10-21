@@ -10,17 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Data Access Object for Rate entity
+ * Implementation of IRateDAO
  */
-public class RateDAO {
+public class RateDAO implements IRateDAO {
     private static final Logger logger = Logger.getLogger(RateDAO.class);
 
-    /**
-     * Get the active rate for a specific vehicle type
-     * @param vehicleType The vehicle type ("Car" or "Motorcycle")
-     * @param conn Database connection
-     * @return Rate object or null if not found
-     */
+    @Override
     public Rate findActiveRateByVehicleType(String vehicleType, Connection conn) throws DataAccessException {
         logger.debug("Finding active rate for vehicle type: {}", vehicleType);
         String sql = "SELECT id, rate_name, hourly_rate, fraction_rate, daily_cap, " +

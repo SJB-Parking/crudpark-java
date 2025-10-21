@@ -8,20 +8,11 @@ import java.math.BigDecimal;
 import java.sql.*;
 
 /**
- * Data Access Object for Payment entity
+ * Implementation of IPaymentDAO
  */
-public class PaymentDAO {
+public class PaymentDAO implements IPaymentDAO {
 
-    /**
-     * Create a payment record within an existing transaction
-     * @param conn Database connection (transaction managed externally)
-     * @param ticketId ID of the ticket
-     * @param operatorId ID of the operator processing the payment
-     * @param amount Amount paid
-     * @param paymentMethod Payment method (e.g., "EFECTIVO")
-     * @return The created Payment with generated ID
-     * @throws DataAccessException if database error occurs
-     */
+    @Override
     public Payment create(Connection conn, int ticketId, int operatorId, double amount, String paymentMethod) 
             throws DataAccessException {
         String sql = "INSERT INTO payments (ticket_id, operator_id, amount, payment_method, " +
@@ -50,12 +41,7 @@ public class PaymentDAO {
         throw new DataAccessException("Failed to create payment record", null);
     }
 
-    /**
-     * Find payment by ticket ID
-     * @param ticketId ID of the ticket
-     * @return Payment or null if not found
-     * @throws DataAccessException if database error occurs
-     */
+    @Override
     public Payment findByTicketId(int ticketId) throws DataAccessException {
         String sql = "SELECT * FROM payments WHERE ticket_id = ?";
         

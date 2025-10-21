@@ -8,14 +8,12 @@ import app.util.Logger;
 import java.sql.*;
 
 /**
- * Data Access Object for Vehicle entity
+ * Implementation of IVehicleDAO
  */
-public class VehicleDAO {
+public class VehicleDAO implements IVehicleDAO {
     private static final Logger logger = Logger.getLogger(VehicleDAO.class);
 
-    /**
-     * Find vehicle by license plate
-     */
+    @Override
     public Vehicle findByLicensePlate(String licensePlate) throws DataAccessException {
         logger.debug("Finding vehicle by license plate: {}", licensePlate);
         String sql = "SELECT id, license_plate, vehicle_type, created_at, updated_at " +
@@ -45,9 +43,7 @@ public class VehicleDAO {
         }
     }
 
-    /**
-     * Create a new vehicle
-     */
+    @Override
     public Vehicle create(Connection conn, String licensePlate, String vehicleType) 
             throws DataAccessException {
         logger.info("Creating new vehicle: {} (Type: {})", licensePlate, vehicleType);
@@ -77,9 +73,7 @@ public class VehicleDAO {
         }
     }
 
-    /**
-     * Find or create vehicle
-     */
+    @Override
     public Vehicle findOrCreate(Connection conn, String licensePlate, String vehicleType) 
             throws DataAccessException {
         Vehicle vehicle = findByLicensePlate(licensePlate);

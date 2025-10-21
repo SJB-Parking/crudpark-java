@@ -351,3 +351,61 @@ Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D) (BUSINESS)
 [2025-10-21 11:27:38] [main] [INFO ] TicketDAO - Creating ticket: TKT000020 for vehicle ID 32 (Type: Monthly)
 [2025-10-21 11:27:38] [main] [INFO ] TicketDAO - Ticket created successfully: ID 22 - TKT000020
 [2025-10-21 11:27:38] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000020 (ABC124)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Card (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Card
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [ERROR] SwingVehicleExitController - Error previewing exit by plate: Database error
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: ABC123 with Cash (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [ERROR] SwingVehicleExitController - Error previewing exit by ID: Database error
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: XYZ999 with Cash (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [WARN ] SwingVehicleExitController - Exit failed: No se encontró un ticket abierto (NOT_FOUND)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 999 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
+[2025-10-21 15:08:53] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Card (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Card
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [ERROR] SwingVehicleExitController - Error previewing exit by plate: Database error
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: ABC123 with Cash (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [ERROR] SwingVehicleExitController - Error previewing exit by ID: Database error
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: XYZ999 with Cash (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [WARN ] SwingVehicleExitController - Exit failed: No se encontró un ticket abierto (NOT_FOUND)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 999 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
+[2025-10-21 15:13:29] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Card (Operator ID: 1)
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Card
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:17:35] [main] [ERROR] SwingVehicleExitController - Error previewing exit by plate: Database error
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: ABC123 with Cash (Operator ID: 1)
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:17:35] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 15:17:35] [main] [ERROR] SwingVehicleExitController - Error previewing exit by ID: Database error
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 (Operator ID: 1)
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: XYZ999 with Cash (Operator ID: 1)
+[2025-10-21 15:17:36] [main] [WARN ] SwingVehicleExitController - Exit failed: No se encontró un ticket abierto (NOT_FOUND)
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 999 (Operator ID: 1)
+[2025-10-21 15:17:36] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
+[2025-10-21 15:17:36] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 15:34:37] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 15:34:37] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 15:34:41] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 15:34:41] [main] [INFO ] SwingAuthController - Login successful for: Admin User
