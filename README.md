@@ -1,236 +1,459 @@
-# Parking System - Java JDBC
+# 🚗 CrudPark - Parking Management System
 
-A simple parking management system using Java, JDBC, and JOptionPane for UI.
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
+[![Maven](https://img.shields.io/badge/Maven-3.x-red.svg)](https://maven.apache.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-## Features
+Complete parking management system developed in Java with Swing GUI, PostgreSQL database, and modern MVC architecture.
 
-- **Operator Authentication**: Login with email and password (BCrypt encryption)
-  - Email format validation (regex)
-  - Password minimum length validation
-  - Maximum 3 login attempts
-- **Vehicle Entry**: Register vehicle entry with automatic type detection
-  - License plate format validation
-  - Duplicate open ticket detection
-  - Automatic monthly subscription detection
-- **Vehicle Exit**: Process vehicle exit with payment calculation
-  - Duration calculation
-  - Rate calculation with grace period
-  - **Monthly subscriptions: $0.00 charge** (as specified)
-  - Automatic payment recording
-- **License Plate Validation**:
-  - Car: 3 letters + 3 numbers (e.g., ABC123)
-  - Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D)
-- **QR Code Data**: String format (TICKET:id|PLATE:plate|DATE:timestamp)
-- **Error Handling**: Custom exceptions for validation, authentication, business rules, and data access
-- **Dependency Injection**: Clean architecture with DI pattern
+## ✨ Features
 
-## Technologies
+### 🔐 Operator Authentication
+- Secure login with email and password
+- BCrypt password encryption
+- Email format validation (regex)
+- Maximum 3 login attempts
+- Session tracking with operator ID
 
-- Java 21
-- PostgreSQL 16
-- JDBC
-- BCrypt (password hashing)
-- JOptionPane (UI)
+### 🚙 Vehicle Entry Registration
+- Automatic vehicle type detection
+- License plate format validation:
+  - **Cars**: `ABC123` (3 letters + 3 numbers)
+  - **Motorcycles**: `ABC12D` (3 letters + 2 numbers + 1 letter)
+- Automatic monthly subscription detection
+- Duplicate open ticket prevention
+- QR code generation
+- Ticket printing
+- Modern Swing GUI interface
 
-## Database Setup
+### 🚗 Vehicle Exit Registration - **NEW FEATURE**
+- **Dual search**: By ticket ID OR license plate
+- **Payment preview** before confirming
+- **Payment method selector**:
+  - Cash (Efectivo)
+  - Card (Tarjeta)
+- **Auto-selection**: If amount is $0, automatically selects "Cash"
+- Automatic duration and rate calculation
+- Grace period handling (first 15 minutes free)
+- Monthly subscriptions: **$0.00** (free)
+- Detailed confirmation dialogs
+- Receipt printing option
 
-1. Install PostgreSQL
-2. Create database:
-```sql
-CREATE DATABASE crudpark;
+### 💰 Rate System
+- Configurable grace period (15 minutes default)
+- Differentiated hourly rates:
+  - Cars: $5.00/hour
+  - Motorcycles: $3.00/hour
+- Daily maximum cap
+- Automatic fraction calculation
+
+### 🌐 Spanish-English Translation
+- Database in English (international standard)
+- User interface in Spanish
+- Automatic translation of:
+  - Ticket types (Guest/Invitado, Monthly/Mensualidad)
+  - Payment methods (Cash/Efectivo, Card/Tarjeta)
+
+## 🛠 Technologies
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Java | 21 | Programming language |
+| Maven | 3.x | Dependency management & build |
+| PostgreSQL | 16 | Relational database |
+| JDBC | 42.7.4 | Database connectivity |
+| HikariCP | 5.1.0 | Connection pooling |
+| BCrypt | 0.10.2 | Password encryption |
+| ZXing | 3.5.3 | QR code generation |
+| Swing | Built-in | Graphical user interface |
+| JUnit 5 | 5.10.0 | Testing framework |
+| Mockito | 5.5.0 | Mocking for tests |
+| SLF4J | 2.0.9 | Logging system |
+
+## Exception Handling
+
+```java
+ValidationException      → Input validation errors
+AuthenticationException  → Authentication failures
+BusinessException        → Business rule violations
+NotFoundException        → Resource not found
+DataAccessException      → Database errors
 ```
 
-3. Run the DDL script:
+## 📦 Prerequisites
+
+- **Java Development Kit (JDK)**: 21 or higher
+- **Apache Maven**: 3.6 or higher
+- **PostgreSQL**: 16 or higher
+- **Git**: For cloning the repository
+
+### Verify installations:
+
 ```bash
-psql -U postgres -d crudpark -f src/main/resources/DDL.sql
+java --version    # Should show Java 21+
+mvn --version     # Should show Maven 3.6+
+psql --version    # Should show PostgreSQL 16+
 ```
 
-4. Insert a test operator (password: "admin123"):
+## 🚀 Installation
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/SJB-Parking/crudpark-java.git
+cd crudpark-java
+```
+
+### 2. Configure the database
+
+#### Create the database:
+
+```bash
+# Connect to PostgreSQL
+psql -U postgres
+
+# Create database
+CREATE DATABASE crudpark_sjb;
+\q
+```
+
+#### Run the DDL script:
+
+```bash
+psql -U postgres -d crudpark_sjb -f src/main/resources/DDL.sql
+```
+
+#### Insert test data (optional):
+
+```bash
+psql -U postgres -d crudpark_sjb -f src/main/resources/test-data.sql
+```
+
+### 3. Configure credentials
+
+Edit `src/main/resources/database.properties`:
+
+```properties
+db.url=jdbc:postgresql://localhost:5432/crudpark_sjb
+db.username=postgres
+db.password=your_password_here
+```
+
+### 4. Compile the project
+
+```bash
+mvn clean compile
+```
+
+## ⚙️ Configuration
+
+### Default Credentials
+
+If you ran `test-data.sql`, you can use:
+
+```
+Email: admin@parking.com
+Password: admin123
+```
+
+### Create a New Operator Manually
+
 ```sql
--- BCrypt hash with cost factor 11 (2^11 = 2,048 rounds)
-INSERT INTO operators (full_name, email, username, password_hash, is_active, created_at, updated_at)
+INSERT INTO operators (full_name, email, username, password_hash, is_active)
 VALUES (
-  'Admin User',
-  'admin@parking.com',
-  'admin',
-  '$2a$11$kH3ulu5AEQGioyzXDx.pg.4JDqE9/mACqZbtdymRdAm.zgUN2rX7.',
-  true,
-  NOW(),
-  NOW()
+  'John Doe',
+  'john@parking.com',
+  'jdoe',
+  '$2a$11$kH3ulu5AEQGioyzXDx.pg.4JDqE9/mACqZbtdymRdAm.zgUN2rX7.',  -- admin123
+  true
 );
 ```
 
-5. Insert default rate:
+### Configure Rates
+
 ```sql
-INSERT INTO rates (hourly_rate, fraction_rate, daily_cap, effective_from, is_active, created_at, updated_at)
-VALUES (5.00, 3.00, 50.00, NOW(), true, NOW(), NOW());
+-- Rate for cars
+INSERT INTO rates (vehicle_type, hourly_rate, grace_period_minutes, daily_cap, is_active)
+VALUES ('Car', 5.00, 15, 50.00, true);
+
+-- Rate for motorcycles
+INSERT INTO rates (vehicle_type, hourly_rate, grace_period_minutes, daily_cap, is_active)
+VALUES ('Motorcycle', 3.00, 15, 30.00, true);
 ```
 
-## Configuration
+## 🎮 Usage
 
-Edit `src/main/resources/database.properties`:
-```properties
-db.url=jdbc:postgresql://localhost:5432/crudpark
-db.username=postgres
-db.password=postgres
-```
+### Run the application
 
-## Build and Run
-
-### Using Maven:
 ```bash
-mvn clean compile
-mvn exec:java -Dexec.mainClass="app.Main"
-```
+# Using Maven
+mvn exec:java
 
-### Or build JAR:
-```bash
+# Or build JAR and run
 mvn clean package
-java -jar target/crudpark-java-1.0-SNAPSHOT.jar
+java -jar target/parking-1.0-SNAPSHOT.jar
 ```
 
-## Usage
+### Workflow
 
-1. **Login**:
-   - Email: admin@parking.com
-   - Password: admin123
+#### 1️⃣ Login
+1. Open the application
+2. Enter email and password
+3. Click "Iniciar Sesión" (Login)
 
-2. **Vehicle Entry**:
-   - Select "Vehicle Entry"
-   - Enter license plate (e.g., ABC123 or ABC12D)
-   - System validates format and detects vehicle type
-   - Ticket is generated with QR code data
+#### 2️⃣ Register Vehicle Entry
+1. In the main menu, click "Registrar Entrada" (Register Entry)
+2. Enter vehicle license plate (e.g., `ABC123` or `ABC12D`)
+3. System automatically detects vehicle type
+4. Confirm registration
+5. Ticket is displayed with:
+   - Ticket ID
+   - License plate
+   - Vehicle type
+   - Ticket type (Guest/Monthly)
+   - Entry time
+   - QR code
 
-3. **Vehicle Exit**:
-   - Select "Vehicle Exit"
-   - Enter Ticket ID
-   - System calculates duration and payment
-   - Shows detailed breakdown
+#### 3️⃣ Register Vehicle Exit - **IMPROVED PROCESS**
 
-## Project Structure
+**Option A: Search by Ticket ID**
+1. Click "Registrar Salida" (Register Exit)
+2. Select "Buscar por ID de Ticket" (Search by Ticket ID)
+3. Enter the ID (e.g., `123`)
+4. System shows **EXIT SUMMARY**:
+   - Ticket information
+   - Parking duration
+   - **Amount to pay**
+   - **Payment method selector** (if amount > 0)
+5. Select payment method:
+   - Efectivo (Cash)
+   - Tarjeta (Card)
+6. Click "Confirmar Salida" (Confirm Exit)
+7. System processes and shows **EXIT PROCESSED**
+8. Option to print receipt
 
-```
-src/
-├── main/
-│   ├── java/app/
-│   │   ├── Main.java                    # Application entry point with DI
-│   │   ├── controller/
-│   │   │   ├── AuthController.java      # Authentication controller
-│   │   │   └── ParkingController.java   # Parking operations controller
-│   │   ├── dao/
-│   │   │   ├── OperatorDAO.java         # Operator data access
-│   │   │   ├── VehicleDAO.java          # Vehicle data access
-│   │   │   ├── TicketDAO.java           # Ticket data access
-│   │   │   ├── SubscriptionDAO.java     # Subscription data access
-│   │   │   ├── RateDAO.java             # Rate data access
-│   │   │   └── PaymentDAO.java          # Payment data access
-│   │   ├── database/
-│   │   │   └── DatabaseConnection.java  # Database connection utility
-│   │   ├── exception/
-│   │   │   ├── ValidationException.java
-│   │   │   ├── AuthenticationException.java
-│   │   │   ├── BusinessException.java
-│   │   │   ├── DataAccessException.java
-│   │   │   └── NotFoundException.java
-│   │   ├── model/
-│   │   │   ├── Operator.java
-│   │   │   ├── Vehicle.java
-│   │   │   ├── Ticket.java
-│   │   │   └── Rate.java
-│   │   ├── service/
-│   │   │   ├── AuthService.java         # Business logic for auth
-│   │   │   └── ParkingService.java      # Business logic for parking
-│   │   └── view/
-│   │       ├── LoginView.java           # Login UI
-│   │       ├── MainMenuView.java        # Main menu UI
-│   │       ├── VehicleEntryView.java    # Entry UI
-│   │       └── VehicleExitView.java     # Exit UI
-│   └── resources/
-│       ├── database.properties
-│       └── DDL.sql
+**Option B: Search by License Plate**
+1. Click "Registrar Salida" (Register Exit)
+2. Select "Buscar por Placa" (Search by Plate)
+3. Enter plate (e.g., `ABC123`)
+4. System searches for open ticket with that plate
+5. Continues same as Option A (from step 4)
+
+**Special Cases:**
+- **Monthly subscription**: Amount $0, payment method auto-selected as "Cash"
+- **Grace period** (< 15 min): Amount $0, free
+- **Normal parking**: Automatic calculation based on rate
+
+## 🧪 Testing
+
+### Run all tests
+
+```bash
+mvn test
 ```
 
-## Architecture
+### Run specific tests
 
-### Layered Architecture:
-```
-┌─────────────────────────────────────────────────────┐
-│                    VIEW LAYER                       │
-│  (JOptionPane dialogs - User interaction)          │
-│  LoginView | MainMenuView | EntryView | ExitView   │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│               CONTROLLER LAYER                      │
-│  (Input validation & Error mapping)                 │
-│  - Validate: null, empty, negative, format          │
-│  - Map exceptions to user messages                  │
-│  AuthController | ParkingController                 │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│                SERVICE LAYER                        │
-│  (Business logic & Transactions)                    │
-│  - Business rules (grace period, subscriptions)     │
-│  - Transaction management (commit/rollback)         │
-│  - Rate calculation                                 │
-│  AuthService | ParkingService                       │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│                  DAO LAYER                          │
-│  (Database access - SQL queries)                    │
-│  - CRUD operations                                  │
-│  - No business logic                                │
-│  OperatorDAO | VehicleDAO | TicketDAO | ...         │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│               DATABASE LAYER                        │
-│  PostgreSQL Database (crudpark)                     │
-└─────────────────────────────────────────────────────┘
+```bash
+# Controller tests
+mvn test -Dtest=ParkingControllerTest
+
+# Swing controller tests
+mvn test -Dtest=SwingVehicleExitControllerTest
+
+# Translator tests
+mvn test -Dtest=VehicleTypeTranslatorTest
 ```
 
-### Dependency Injection:
+### Test Coverage
+
+- ✅ **ParkingControllerTest**: 17 tests
+  - Input validation
+  - Exit preview by ID
+  - Exit preview by plate
+  - Processing with payment method
+  - Error handling
+
+- ✅ **SwingVehicleExitControllerTest**: 11 tests
+  - Exit processing
+  - Preview by ID and plate
+  - Payment methods
+  - Exception handling
+
+**Total**: 28 passing tests ✅
+
+## 📁 Project Structure
+
 ```
-Main.java (DI Container)
- │
- ├─> DAOs (instantiated first)
- ├─> Services (inject DAOs)
- ├─> Controllers (inject Services)
- └─> Views (no dependencies)
+crudpark-java/
+├── src/
+│   ├── main/
+│   │   ├── java/app/
+│   │   │   ├── Main.java                           # Entry point with DI
+│   │   │   ├── controller/
+│   │   │   │   ├── AuthController.java             # Authentication
+│   │   │   │   ├── ParkingController.java          # Parking operations
+│   │   │   │   ├── SwingVehicleExitController.java # Swing controller
+│   │   │   │   ├── EntryResult.java                # Result DTO
+│   │   │   │   ├── ExitResult.java                 # Result DTO
+│   │   │   │   └── LoginResult.java                # Result DTO
+│   │   │   ├── dao/
+│   │   │   │   ├── OperatorDAO.java
+│   │   │   │   ├── VehicleDAO.java
+│   │   │   │   ├── TicketDAO.java                  # + findOpenTicketByPlate()
+│   │   │   │   ├── RateDAO.java
+│   │   │   │   ├── PaymentDAO.java
+│   │   │   │   └── SubscriptionDAO.java
+│   │   │   ├── database/
+│   │   │   │   └── DatabaseConnection.java         # HikariCP pool
+│   │   │   ├── exception/
+│   │   │   │   ├── ValidationException.java
+│   │   │   │   ├── AuthenticationException.java
+│   │   │   │   ├── BusinessException.java
+│   │   │   │   ├── DataAccessException.java
+│   │   │   │   └── NotFoundException.java
+│   │   │   ├── model/
+│   │   │   │   ├── Operator.java
+│   │   │   │   ├── Vehicle.java
+│   │   │   │   ├── Ticket.java
+│   │   │   │   ├── Rate.java
+│   │   │   │   └── Payment.java
+│   │   │   ├── service/
+│   │   │   │   ├── AuthService.java
+│   │   │   │   └── ParkingService.java             # + preview methods
+│   │   │   ├── util/
+│   │   │   │   ├── Logger.java
+│   │   │   │   ├── QRCodeGenerator.java
+│   │   │   │   ├── TicketPrinter.java
+│   │   │   │   └── VehicleTypeTranslator.java      # ES ↔ EN
+│   │   │   └── view/swing/
+│   │   │       ├── LoginFrame.java                 # Login UI
+│   │   │       ├── MainMenuFrame.java              # Main menu
+│   │   │       ├── VehicleEntryFrame.java          # Entry registration
+│   │   │       ├── VehicleExitFrame.java           # Exit registration (NEW)
+│   │   │       ├── PaymentPreviewDialog.java       # Payment preview (NEW)
+│   │   │       ├── VehicleExitSuccessDialog.java   # Confirmation (NEW)
+│   │   │       ├── LoginView.java
+│   │   │       ├── MainMenuView.java
+│   │   │       ├── VehicleEntryView.java
+│   │   │       └── VehicleExitView.java            # View logic
+│   │   └── resources/
+│   │       ├── database.properties                  # DB configuration
+│   │       ├── DDL.sql                             # Database schema
+│   │       └── test-data.sql                       # Test data
+│   └── test/
+│       └── java/app/
+│           ├── controller/
+│           │   ├── ParkingControllerTest.java       # 17 tests ✅
+│           │   └── SwingVehicleExitControllerTest.java # 11 tests ✅
+├── target/                                          # Compiled files
+├── logs/                                            # Application logs
+├── qr-codes/                                        # Generated QR codes
+├── pom.xml                                          # Maven config
+├── README.md                                        # This file
+└── QUICKSTART.md                                    # Quick start guide
 ```
 
-### Validation Rules:
-- **Controllers**: Validate null, empty, negative values, formats (regex)
-- **Services**: Business rules and transaction management
-- **DAOs**: Data persistence only
+## 🎯 Advanced Features
 
-### Exception Handling:
-- `ValidationException`: Input validation errors
-- `AuthenticationException`: Login failures  
-- `BusinessException`: Business rule violations
-- `DataAccessException`: Database errors
-- `NotFoundException`: Resource not found
+### HikariCP Connection Pool
 
-## License Plate Format
+```java
+// Optimized configuration
+Minimum Idle: 2
+Maximum Pool Size: 10
+Connection Timeout: 30 seconds
+Idle Timeout: 10 minutes
+Max Lifetime: 30 minutes
+```
 
-- **Car**: `ABC123` (3 uppercase letters + 3 digits)
-- **Motorcycle**: `ABC12D` (3 uppercase letters + 2 digits + 1 uppercase letter)
-- Invalid formats are rejected with error message
+### Logging System
 
-## Pricing
+```java
+// Log levels
+INFO  - Normal operations
+WARN  - Warnings (e.g., tickets not found)
+ERROR - Critical errors
+DEBUG - Development information
+```
 
-- **Grace Period**: First 30 minutes FREE
-- **Hourly Rate**: $5.00 per hour
-- **Fraction Rate**: $3.00 per additional fraction
-- **Daily Cap**: $50.00 maximum
-- **Monthly Subscription**: FREE parking
+Logs saved in: `logs/app.log`
 
-## Notes
+### Dependency Injection
 
-- QR code is stored as string format (no image generation)
-- All UI interactions use JOptionPane dialogs
-- Simple JDBC connections (no pooling)
-- BCrypt for secure password storage
-- Automatic vehicle type detection
+```java
+// Main.java initializes all dependencies
+DAOs → Services → Controllers → Views
+```
+
+### Multi-Layer Validation
+
+1. **Controller**: Format, null, empty, range
+2. **Service**: Business rules
+3. **DAO**: Database constraints
+
+### Automatic Translation
+
+```java
+// Database storage (English)
+"Cash" → Efectivo
+"Card" → Tarjeta
+"Guest" → Invitado
+"Monthly" → Mensualidad
+
+// UI in Spanish
+Efectivo → "Cash" (for DB)
+Tarjeta → "Card" (for DB)
+```
+
+## 📊 Database Model
+
+### Main Tables
+
+```sql
+operators         -- System operators
+vehicles          -- Registered vehicles
+tickets           -- Entry/exit tickets
+rates             -- Rates per vehicle type
+payments          -- Recorded payments
+subscriptions     -- Monthly subscriptions
+```
+
+### Relationships
+
+```
+operators (1) ──< (N) tickets
+vehicles  (1) ──< (N) tickets
+tickets   (1) ──< (1) payments
+vehicles  (1) ──< (N) subscriptions
+rates     (1) ──< (N) tickets
+```
+
+## 🤝 Contributing
+
+### How to Contribute
+
+1. Fork the project
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+### Style Guide
+
+- Follow Java conventions (camelCase, PascalCase)
+- Spanish comments for complex logic
+- Spanish JavaDoc for public methods
+- Tests for new features
+- Clean and readable code
+
+## 👥 Team
+
+Developed by **SJB-Parking**
+
+- GitHub: [@SJB-Parking](https://github.com/SJB-Parking)
+
+
+---
+

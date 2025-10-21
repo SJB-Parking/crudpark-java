@@ -2,7 +2,6 @@ package app.view.swing;
 
 import app.controller.ExitResult;
 import app.controller.SwingVehicleExitController;
-import app.util.TicketPrinter;
 
 import javax.swing.*;
 
@@ -21,7 +20,7 @@ public class VehicleExitView {
      * Show vehicle exit form and process the exit
      */
     public void showExitForm() {
-        // Show exit form (modal dialog)
+        // Show exit form (modal dialog) with search options
         VehicleExitFrame exitFrame = new VehicleExitFrame();
         exitFrame.setVisible(true);
         
@@ -32,39 +31,40 @@ public class VehicleExitView {
             return;
         }
         
-        String ticketId = exitFrame.getTicketId();
+        String searchValue = exitFrame.getSearchValue();
+        boolean searchById = exitFrame.isSearchById();
         
-        // Process exit through controller (no UI logic in controller)
-        ExitResult result = controller.processExit(ticketId);
+        ExitResult previewResult;
         
-        // Handle result - ALL UI LOGIC HERE
-        if (result.isSuccess()) {
-            showSuccessWindow(result);
+        // Get preview based on search type
+        if (searchById) {
+            // Search by ticket ID - show preview
+            previewResult = controller.previewExitById(searchValue);
         } else {
-            showError(result);
+            // Search by license plate - show preview
+            previewResult = controller.previewExitByPlate(searchValue);
         }
-    }
-
-    /**
-     * Show success - ask first if user wants to print or see on screen
-     */
-    private void showSuccessWindow(ExitResult result) {
-        // Ask FIRST if user wants to print
-        int printChoice = JOptionPane.showConfirmDialog(null,
-            "¡Salida procesada exitosamente!\n\n" +
-            "¿Desea imprimir el recibo?\n" +
-            "(Si selecciona NO, se mostrará en pantalla)",
-            "¿Imprimir Recibo?",
-            JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
         
-        if (printChoice == JOptionPane.YES_OPTION) {
-            // User wants to PRINT - don't show on screen
-            TicketPrinter.printExitTicket(result.getExitResult());
-        } else {
-            // User wants to SEE on screen - show the window
-            VehicleExitFrame.showExitSuccess(result.getExitResult());
+        // Check if preview was successful
+        if (!previewResult.isSuccess()) {
+            showError(previewResult);
+            return;
         }
+        
+        // Show payment preview dialog (it handles confirmation and processing internally)
+        PaymentPreviewDialog previewDialog = new PaymentPreviewDialog(
+            null,  // parent frame
+            previewResult.getExitResult(),
+            controller
+        );
+        previewDialog.setVisible(true);
+        
+        // PaymentPreviewDialog handles everything:
+        // - Shows preview
+        // - User selects payment method
+        // - Processes exit
+        // - Shows success dialog
+        // So we're done here!
     }
 
     /**

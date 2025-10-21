@@ -260,6 +260,261 @@ public class ParkingService {
     }
 
     /**
+     * Process vehicle exit by license plate with custom payment method
+     */
+    public ExitResult processExitByPlate(String licensePlate, int operatorId, String paymentMethod) 
+            throws NotFoundException, BusinessException, DataAccessException {
+        logger.info("Processing vehicle exit by plate: {} (Operator ID: {})", licensePlate, operatorId);
+        
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            
+            try {
+                // Find open ticket by license plate
+                Ticket ticket = ticketDAO.findOpenTicketByPlate(conn, licensePlate);
+                
+                if (ticket == null) {
+                    logger.warn("No open ticket found for plate: {}", licensePlate);
+                    throw new NotFoundException("No open ticket found for this license plate");
+                }
+                
+                logger.debug("Open ticket found: {} - Plate: {}", ticket.getId(), licensePlate);
+                
+                // Process exit using the ticket ID
+                return processExitWithPayment(ticket.getId(), operatorId, paymentMethod);
+                
+            } catch (NotFoundException | BusinessException | DataAccessException e) {
+                conn.rollback();
+                throw e;
+            } catch (Exception e) {
+                conn.rollback();
+                throw new DataAccessException("Error processing exit by plate", e);
+            }
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) throw (NotFoundException) e;
+            if (e instanceof BusinessException) throw (BusinessException) e;
+            if (e instanceof DataAccessException) throw (DataAccessException) e;
+            throw new DataAccessException("Database connection error", e);
+        }
+    }
+
+    /**
+     * Preview exit by plate (find ticket and calculate, but don't save to database)
+     */
+    public ExitResult previewExitByPlate(String licensePlate, int operatorId) 
+            throws NotFoundException, BusinessException, DataAccessException {
+        logger.info("Previewing vehicle exit by plate: {} (Operator ID: {})", licensePlate, operatorId);
+        
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            // Find open ticket by license plate
+            Ticket ticket = ticketDAO.findOpenTicketByPlate(conn, licensePlate);
+            
+            if (ticket == null) {
+                logger.warn("No open ticket found for plate: {}", licensePlate);
+                throw new NotFoundException("No se encontró un ticket abierto para esta placa");
+            }
+            
+            logger.debug("Open ticket found for preview: {} - Plate: {}", ticket.getId(), licensePlate);
+            
+            // Calculate exit info without saving
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            long durationMinutes = (now.getTime() - ticket.getEntryDatetime().getTime()) / (60 * 1000);
+            
+            // Calculate cost
+            double amount = 0.0;
+            boolean isFree = false;
+            String freeReason = null;
+            
+            // Get the appropriate rate for this vehicle type
+            Rate rate = rateDAO.findActiveRateByVehicleType(ticket.getVehicleType(), conn);
+            
+            if (rate == null) {
+                logger.error("No active rate found for vehicle type: {}", ticket.getVehicleType());
+                throw new DataAccessException("No active rate found for vehicle type: " + ticket.getVehicleType());
+            }
+            
+            if ("Monthly".equals(ticket.getTicketType())) {
+                isFree = true;
+                freeReason = "Monthly Subscription";
+            } else if (durationMinutes <= rate.getGracePeriodMinutes()) {
+                isFree = true;
+                freeReason = String.format("Grace Period (first %d minutes)", rate.getGracePeriodMinutes());
+            } else {
+                amount = calculateAmount(durationMinutes, rate);
+            }
+            
+            logger.info("Exit preview for {}: Amount ${}, Free: {}", licensePlate, amount, isFree);
+            
+            return new ExitResult(ticket, now, (int) durationMinutes, amount, isFree, freeReason);
+            
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) throw (NotFoundException) e;
+            if (e instanceof BusinessException) throw (BusinessException) e;
+            if (e instanceof DataAccessException) throw (DataAccessException) e;
+            throw new DataAccessException("Database connection error", e);
+        }
+    }
+
+    /**
+     * Preview exit by ID (find ticket and calculate, but don't save to database)
+     */
+    public ExitResult previewExitById(int ticketId, int operatorId) 
+            throws NotFoundException, BusinessException, DataAccessException {
+        logger.info("Previewing vehicle exit by ID: {} (Operator ID: {})", ticketId, operatorId);
+        
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            // Find ticket by ID
+            Ticket ticket = ticketDAO.findByIdWithVehicle(ticketId);
+            
+            if (ticket == null) {
+                logger.warn("Ticket not found: ID {}", ticketId);
+                throw new NotFoundException("No se encontró el ticket");
+            }
+            
+            logger.debug("Ticket found for preview: {} - Plate: {} (Status: {})", 
+                        ticketId, ticket.getLicensePlate(), ticket.getStatus());
+            
+            if (!"OPEN".equals(ticket.getStatus())) {
+                logger.warn("Attempted preview with closed ticket: ID {}", ticketId);
+                throw new BusinessException("El ticket ya está cerrado");
+            }
+            
+            // Calculate exit info without saving
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            long durationMinutes = (now.getTime() - ticket.getEntryDatetime().getTime()) / (60 * 1000);
+            
+            // Calculate cost
+            double amount = 0.0;
+            boolean isFree = false;
+            String freeReason = null;
+            
+            // Get the appropriate rate for this vehicle type
+            Rate rate = rateDAO.findActiveRateByVehicleType(ticket.getVehicleType(), conn);
+            
+            if (rate == null) {
+                logger.error("No active rate found for vehicle type: {}", ticket.getVehicleType());
+                throw new DataAccessException("No active rate found for vehicle type: " + ticket.getVehicleType());
+            }
+            
+            if ("Monthly".equals(ticket.getTicketType())) {
+                isFree = true;
+                freeReason = "Monthly Subscription";
+            } else if (durationMinutes <= rate.getGracePeriodMinutes()) {
+                isFree = true;
+                freeReason = String.format("Grace Period (first %d minutes)", rate.getGracePeriodMinutes());
+            } else {
+                amount = calculateAmount(durationMinutes, rate);
+            }
+            
+            logger.info("Exit preview for ticket {}: Amount ${}, Free: {}", ticketId, amount, isFree);
+            
+            return new ExitResult(ticket, now, (int) durationMinutes, amount, isFree, freeReason);
+            
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) throw (NotFoundException) e;
+            if (e instanceof BusinessException) throw (BusinessException) e;
+            if (e instanceof DataAccessException) throw (DataAccessException) e;
+            throw new DataAccessException("Database connection error", e);
+        }
+    }
+
+    /**
+     * Process vehicle exit with custom payment method
+     */
+    public ExitResult processExitWithPayment(int ticketId, int operatorId, String paymentMethod) 
+            throws NotFoundException, BusinessException, DataAccessException {
+        logger.info("Processing vehicle exit: Ticket ID {} (Operator ID: {}, Payment: {})", 
+                   ticketId, operatorId, paymentMethod);
+        
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            conn.setAutoCommit(false);
+            
+            try {
+                // Get ticket
+                Ticket ticket = ticketDAO.findByIdWithVehicle(ticketId);
+                
+                if (ticket == null) {
+                    logger.warn("Ticket not found: ID {}", ticketId);
+                    throw new NotFoundException("Ticket not found");
+                }
+                
+                logger.debug("Ticket found: {} - Plate: {} (Status: {})", 
+                            ticketId, ticket.getLicensePlate(), ticket.getStatus());
+                
+                if (!"OPEN".equals(ticket.getStatus())) {
+                    logger.warn("Attempted exit with closed ticket: ID {}", ticketId);
+                    throw new BusinessException("Ticket is already closed");
+                }
+                
+                // Calculate duration
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                long durationMinutes = (now.getTime() - ticket.getEntryDatetime().getTime()) / (60 * 1000);
+                
+                // Update ticket
+                ticketDAO.updateExit(conn, ticketId, now, (int) durationMinutes);
+                
+                // Calculate cost
+                double amount = 0.0;
+                boolean isFree = false;
+                String freeReason = null;
+                
+                // Get the appropriate rate for this vehicle type
+                Rate rate = rateDAO.findActiveRateByVehicleType(ticket.getVehicleType(), conn);
+                
+                if (rate == null) {
+                    logger.error("No active rate found for vehicle type: {}", ticket.getVehicleType());
+                    throw new DataAccessException("No active rate found for vehicle type: " + ticket.getVehicleType());
+                }
+                
+                logger.debug("Rate applied: {} (ID: {}) for vehicle type: {}", 
+                            rate.getRateName(), rate.getId(), ticket.getVehicleType());
+                
+                if ("Monthly".equals(ticket.getTicketType())) {
+                    isFree = true;
+                    freeReason = "Monthly Subscription";
+                    logger.info("Exit free - Monthly subscription: {}", ticket.getLicensePlate());
+                } else if (durationMinutes <= rate.getGracePeriodMinutes()) {
+                    isFree = true;
+                    freeReason = String.format("Grace Period (first %d minutes)", rate.getGracePeriodMinutes());
+                    logger.info("Exit free - Grace period: {} (Duration: {}min)", 
+                               ticket.getLicensePlate(), durationMinutes);
+                } else {
+                    amount = calculateAmount(durationMinutes, rate);
+                    logger.debug("Payment calculated: ${} for {} (Duration: {}min)", 
+                                amount, ticket.getLicensePlate(), durationMinutes);
+                    
+                    // Record payment with custom payment method
+                    if (amount > 0) {
+                        paymentDAO.create(conn, ticketId, operatorId, amount, paymentMethod);
+                        logger.info("Payment recorded: ${} ({}) for {} (Ticket: {})", 
+                                   amount, paymentMethod, ticket.getLicensePlate(), ticketId);
+                    }
+                }
+                
+                conn.commit();
+                
+                logger.info("Vehicle exit successful: {} - Ticket ID: {} (Amount: ${}, Free: {})", 
+                           ticket.getLicensePlate(), ticketId, amount, isFree);
+                
+                return new ExitResult(ticket, now, (int) durationMinutes, amount, isFree, freeReason);
+                
+            } catch (NotFoundException | BusinessException | DataAccessException e) {
+                conn.rollback();
+                logger.error("Vehicle exit failed for Ticket ID {}: {}", ticketId, e.getMessage());
+                throw e;
+            } catch (Exception e) {
+                conn.rollback();
+                throw new DataAccessException("Error processing exit", e);
+            }
+        } catch (Exception e) {
+            if (e instanceof NotFoundException) throw (NotFoundException) e;
+            if (e instanceof BusinessException) throw (BusinessException) e;
+            if (e instanceof DataAccessException) throw (DataAccessException) e;
+            throw new DataAccessException("Database connection error", e);
+        }
+    }
+
+    /**
      * Exit result data class
      */
     public static class ExitResult {

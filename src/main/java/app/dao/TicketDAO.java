@@ -149,6 +149,57 @@ public class TicketDAO {
     }
 
     /**
+     * Find open ticket by license plate
+     */
+    public Ticket findOpenTicketByPlate(Connection conn, String licensePlate) throws DataAccessException {
+        logger.debug("Finding open ticket for plate: {}", licensePlate);
+        String sql = "SELECT t.id, t.folio, t.vehicle_id, t.operator_id, t.subscription_id, " +
+                     "t.entry_datetime, t.exit_datetime, t.ticket_type, t.status, " +
+                     "t.parking_duration_minutes, t.qr_code_data, " +
+                     "v.license_plate, v.vehicle_type " +
+                     "FROM tickets t " +
+                     "INNER JOIN vehicles v ON t.vehicle_id = v.id " +
+                     "WHERE v.license_plate = ? AND t.status = 'OPEN' " +
+                     "ORDER BY t.entry_datetime DESC LIMIT 1";
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, licensePlate.toUpperCase());
+            ResultSet rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                Ticket ticket = new Ticket();
+                ticket.setId(rs.getInt("id"));
+                ticket.setFolio(rs.getString("folio"));
+                ticket.setVehicleId(rs.getInt("vehicle_id"));
+                ticket.setOperatorId(rs.getInt("operator_id"));
+                
+                Integer subId = rs.getObject("subscription_id") != null ? 
+                               rs.getInt("subscription_id") : null;
+                ticket.setSubscriptionId(subId);
+                
+                ticket.setEntryDatetime(rs.getTimestamp("entry_datetime"));
+                ticket.setExitDatetime(rs.getTimestamp("exit_datetime"));
+                ticket.setTicketType(rs.getString("ticket_type"));
+                ticket.setStatus(rs.getString("status"));
+                ticket.setParkingDurationMinutes(rs.getObject("parking_duration_minutes") != null ?
+                                                rs.getInt("parking_duration_minutes") : null);
+                ticket.setQrCodeData(rs.getString("qr_code_data"));
+                ticket.setLicensePlate(rs.getString("license_plate"));
+                ticket.setVehicleType(rs.getString("vehicle_type"));
+                logger.debug("Open ticket found for {}: ID {}", licensePlate, ticket.getId());
+                return ticket;
+            }
+            
+            logger.warn("No open ticket found for plate: {}", licensePlate);
+            return null;
+            
+        } catch (SQLException e) {
+            logger.error("Error finding open ticket for plate {}: {}", licensePlate, e.getMessage());
+            throw new DataAccessException("Error finding open ticket", e);
+        }
+    }
+
+    /**
      * Update ticket QR code
      */
     public void updateQRCode(Connection conn, int ticketId, String qrCodeData) 

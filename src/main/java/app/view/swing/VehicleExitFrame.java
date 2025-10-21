@@ -7,14 +7,18 @@ import java.awt.*;
 
 /**
  * Vehicle exit dialog (modal)
- * Changed from JFrame to JDialog to support modal behavior without threads
+ * Allows searching by Ticket ID or License Plate
  */
 public class VehicleExitFrame extends JDialog {
-    private JTextField ticketIdField;
+    private JRadioButton searchByIdRadio;
+    private JRadioButton searchByPlateRadio;
+    private JLabel searchLabel;
+    private JTextField searchField;
     private JButton processButton;
     private JButton cancelButton;
     
-    private String ticketId;
+    private String searchValue;
+    private boolean searchById = true;  // default search mode
     private boolean processed = false;
 
     public VehicleExitFrame() {
@@ -24,7 +28,7 @@ public class VehicleExitFrame extends JDialog {
 
     private void initComponents() {
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        setSize(450, 220);
+        setSize(500, 280);
         setLocationRelativeTo(null);
         setResizable(false);
 
@@ -45,21 +49,45 @@ public class VehicleExitFrame extends JDialog {
         formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setBackground(new Color(240, 240, 240));
 
+        // Radio buttons panel
+        JPanel radioPanel = new JPanel();
+        radioPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        radioPanel.setBackground(new Color(240, 240, 240));
+        radioPanel.setMaximumSize(new Dimension(500, 50));
+
+        searchByIdRadio = new JRadioButton("Buscar por ID de Ticket", true);
+        searchByIdRadio.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchByIdRadio.setBackground(new Color(240, 240, 240));
+        searchByIdRadio.addActionListener(e -> updateSearchMode(true));
+
+        searchByPlateRadio = new JRadioButton("Buscar por Placa");
+        searchByPlateRadio.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchByPlateRadio.setBackground(new Color(240, 240, 240));
+        searchByPlateRadio.addActionListener(e -> updateSearchMode(false));
+
+        ButtonGroup searchGroup = new ButtonGroup();
+        searchGroup.add(searchByIdRadio);
+        searchGroup.add(searchByPlateRadio);
+
+        radioPanel.add(searchByIdRadio);
+        radioPanel.add(searchByPlateRadio);
+        formPanel.add(radioPanel);
+
         // Input panel with label and field
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         inputPanel.setBackground(new Color(240, 240, 240));
-        inputPanel.setMaximumSize(new Dimension(450, 50));
+        inputPanel.setMaximumSize(new Dimension(500, 50));
 
-        JLabel ticketLabel = new JLabel("ID Ticket:");
-        ticketLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        searchLabel = new JLabel("ID Ticket:");
+        searchLabel.setFont(new Font("Arial", Font.BOLD, 14));
         
-        ticketIdField = new JTextField(15);
-        ticketIdField.setFont(new Font("Arial", Font.PLAIN, 16));
-        ticketIdField.setPreferredSize(new Dimension(200, 30));
+        searchField = new JTextField(15);
+        searchField.setFont(new Font("Arial", Font.PLAIN, 16));
+        searchField.setPreferredSize(new Dimension(200, 30));
 
-        inputPanel.add(ticketLabel);
-        inputPanel.add(ticketIdField);
+        inputPanel.add(searchLabel);
+        inputPanel.add(searchField);
 
         formPanel.add(inputPanel);
         mainPanel.add(formPanel, BorderLayout.CENTER);
@@ -90,15 +118,32 @@ public class VehicleExitFrame extends JDialog {
         add(mainPanel);
 
         // Enter key press triggers process
-        ticketIdField.addActionListener(e -> handleProcess());
+        searchField.addActionListener(e -> handleProcess());
+    }
+
+    /**
+     * Update search mode and UI elements based on selection
+     */
+    private void updateSearchMode(boolean byId) {
+        searchById = byId;
+        if (byId) {
+            searchLabel.setText("ID Ticket:");
+            searchField.setToolTipText("Ingrese el ID del ticket");
+        } else {
+            searchLabel.setText("Placa:");
+            searchField.setToolTipText("Ingrese la placa del vehículo");
+        }
+        searchField.setText("");  // Clear field when switching modes
+        searchField.requestFocus();
     }
 
     private void handleProcess() {
-        ticketId = ticketIdField.getText().trim();
+        searchValue = searchField.getText().trim();
 
-        if (ticketId.isEmpty()) {
+        if (searchValue.isEmpty()) {
+            String fieldName = searchById ? "ID de ticket" : "placa";
             JOptionPane.showMessageDialog(this,
-                "Por favor ingrese un ID de ticket",
+                "Por favor ingrese un " + fieldName,
                 "Error de Validación",
                 JOptionPane.ERROR_MESSAGE);
             return;
@@ -108,8 +153,12 @@ public class VehicleExitFrame extends JDialog {
         dispose();
     }
 
-    public String getTicketId() {
-        return ticketId;
+    public String getSearchValue() {
+        return searchValue;
+    }
+
+    public boolean isSearchById() {
+        return searchById;
     }
 
     public boolean isProcessed() {

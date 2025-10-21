@@ -202,7 +202,7 @@ public class VehicleEntryFrame extends JDialog {
         // Ticket Type
         JLabel ticketTypeLabel = new JLabel("Tipo de Ticket:");
         ticketTypeLabel.setFont(labelFont);
-        JLabel ticketTypeValue = new JLabel(ticket.getTicketType());
+        JLabel ticketTypeValue = new JLabel(app.util.VehicleTypeTranslator.ticketTypeToSpanish(ticket.getTicketType()));
         ticketTypeValue.setFont(valueFont);
         infoPanel.add(ticketTypeLabel);
         infoPanel.add(ticketTypeValue);

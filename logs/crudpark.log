@@ -176,3 +176,145 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 [2025-10-20 20:55:57] [main] [INFO ] ParkingService - Payment recorded: $30000.0 for JJJ888 (Ticket: 12)
 [2025-10-20 20:55:57] [main] [INFO ] ParkingService - Vehicle exit successful: JJJ888 - Ticket ID: 12 (Amount: $30000.0, Free: false)
 [2025-10-20 20:55:57] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $30000.0
+[2025-10-21 09:25:06] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 09:25:06] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 09:25:08] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 09:25:08] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 09:25:21] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: JJJ44P (Operator ID: 3)
+[2025-10-21 09:25:22] [main] [INFO ] VehicleDAO - Creating new vehicle: JJJ44P (Type: Motorcycle)
+[2025-10-21 09:25:22] [main] [INFO ] VehicleDAO - Vehicle created: JJJ44P - ID 26
+[2025-10-21 09:25:22] [main] [INFO ] TicketDAO - Creating ticket: TKT000016 for vehicle ID 26 (Type: Guest)
+[2025-10-21 09:25:23] [main] [INFO ] TicketDAO - Ticket created successfully: ID 18 - TKT000016
+[2025-10-21 09:25:23] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000016 (JJJ44P)
+[2025-10-21 09:28:46] [app.Main.main()] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 09:28:46] [app.Main.main()] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 09:28:48] [app.Main.main()] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 09:28:48] [app.Main.main()] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 09:31:30] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 09:31:30] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 09:31:32] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 09:31:32] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 09:31:38] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: KIO123 (Operator ID: 3)
+[2025-10-21 09:31:39] [main] [INFO ] VehicleDAO - Creating new vehicle: KIO123 (Type: Car)
+[2025-10-21 09:31:39] [main] [INFO ] VehicleDAO - Vehicle created: KIO123 - ID 27
+[2025-10-21 09:31:40] [main] [INFO ] TicketDAO - Creating ticket: TKT000017 for vehicle ID 27 (Type: Guest)
+[2025-10-21 09:31:40] [main] [INFO ] TicketDAO - Ticket created successfully: ID 19 - TKT000017
+[2025-10-21 09:31:41] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000017 (KIO123)
+[2025-10-21 09:31:52] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 15 (Operator ID: 3)
+[2025-10-21 09:31:52] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 15 (Operator ID: 3)
+[2025-10-21 09:31:53] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 09:31:53] [main] [INFO ] ParkingService - Payment recorded: $30000.0 for CCC111 (Ticket: 15)
+[2025-10-21 09:31:54] [main] [INFO ] ParkingService - Vehicle exit successful: CCC111 - Ticket ID: 15 (Amount: $30000.0, Free: false)
+[2025-10-21 09:31:54] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $30000.0
+[2025-10-21 09:51:47] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 09:51:47] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 09:51:49] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 09:51:49] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 09:52:02] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: zzz111 (Operator ID: 3)
+[2025-10-21 09:52:02] [main] [INFO ] ParkingService - Previewing vehicle exit by plate: ZZZ111 (Operator ID: 3)
+[2025-10-21 09:52:03] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 09:52:03] [main] [INFO ] ParkingService - Exit preview for ZZZ111: Amount $30000.0, Free: false
+[2025-10-21 09:54:23] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 09:54:23] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 09:54:32] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 09:54:32] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 09:54:40] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: zzz111 (Operator ID: 3)
+[2025-10-21 09:54:40] [main] [INFO ] ParkingService - Previewing vehicle exit by plate: ZZZ111 (Operator ID: 3)
+[2025-10-21 09:54:43] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 09:54:43] [main] [INFO ] ParkingService - Exit preview for ZZZ111: Amount $30000.0, Free: false
+[2025-10-21 09:54:52] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 14 with Card (Operator ID: 3)
+[2025-10-21 09:54:52] [AWT-EventQueue-0] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 14 (Operator ID: 3, Payment: Card)
+[2025-10-21 09:54:58] [AWT-EventQueue-0] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 09:54:58] [AWT-EventQueue-0] [INFO ] ParkingService - Payment recorded: $30000.0 (Card) for ZZZ111 (Ticket: 14)
+[2025-10-21 09:55:00] [AWT-EventQueue-0] [INFO ] ParkingService - Vehicle exit successful: ZZZ111 - Ticket ID: 14 (Amount: $30000.0, Free: false)
+[2025-10-21 09:55:00] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Exit successful - Amount: $30000.0, Method: Card
+[2025-10-21 09:56:03] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 17 (Operator ID: 3)
+[2025-10-21 09:56:03] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 17 (Operator ID: 3)
+[2025-10-21 09:56:08] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 09:56:08] [main] [INFO ] ParkingService - Payment recorded: $30000.0 for NNN123 (Ticket: 17)
+[2025-10-21 09:56:18] [main] [INFO ] ParkingService - Vehicle exit successful: NNN123 - Ticket ID: 17 (Amount: $30000.0, Free: false)
+[2025-10-21 09:56:18] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $30000.0
+[2025-10-21 09:57:26] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: 5A5A5A (Operator ID: 3)
+[2025-10-21 09:57:26] [main] [WARN ] SwingVehicleEntryController - Entry failed: Invalid license plate format.
+Car: 3 letters + 3 numbers (e.g., ABC123)
+Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D) (BUSINESS)
+[2025-10-21 09:57:32] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: ÑÑÑ111 (Operator ID: 3)
+[2025-10-21 09:57:32] [main] [WARN ] SwingVehicleEntryController - Entry failed: Invalid license plate format.
+Car: 3 letters + 3 numbers (e.g., ABC123)
+Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D) (BUSINESS)
+[2025-10-21 09:57:38] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: PPP010 (Operator ID: 3)
+[2025-10-21 09:57:55] [main] [INFO ] VehicleDAO - Creating new vehicle: PPP010 (Type: Car)
+[2025-10-21 09:57:55] [main] [INFO ] VehicleDAO - Vehicle created: PPP010 - ID 28
+[2025-10-21 09:57:57] [main] [INFO ] TicketDAO - Creating ticket: TKT000018 for vehicle ID 28 (Type: Guest)
+[2025-10-21 09:57:57] [main] [INFO ] TicketDAO - Ticket created successfully: ID 20 - TKT000018
+[2025-10-21 09:57:59] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000018 (PPP010)
+[2025-10-21 09:59:04] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 26 (Operator ID: 3)
+[2025-10-21 09:59:04] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 26 (Operator ID: 3)
+[2025-10-21 09:59:05] [main] [WARN ] TicketDAO - Ticket not found: 26
+[2025-10-21 09:59:05] [main] [WARN ] ParkingService - Ticket not found: ID 26
+[2025-10-21 09:59:06] [main] [ERROR] ParkingService - Vehicle exit failed for Ticket ID 26: Ticket not found
+[2025-10-21 09:59:06] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 09:59:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 25 (Operator ID: 3)
+[2025-10-21 09:59:10] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 25 (Operator ID: 3)
+[2025-10-21 09:59:14] [main] [WARN ] TicketDAO - Ticket not found: 25
+[2025-10-21 09:59:14] [main] [WARN ] ParkingService - Ticket not found: ID 25
+[2025-10-21 10:00:26] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 10:00:26] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 10:00:35] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 10:00:35] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 10:00:38] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 20 (Operator ID: 3)
+[2025-10-21 10:00:38] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 20 (Operator ID: 3)
+[2025-10-21 10:00:59] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 10:00:59] [main] [INFO ] ParkingService - Exit free - Grace period: PPP010 (Duration: 3min)
+[2025-10-21 10:01:00] [main] [INFO ] ParkingService - Vehicle exit successful: PPP010 - Ticket ID: 20 (Amount: $0.0, Free: true)
+[2025-10-21 10:01:00] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 10:03:48] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 10:03:48] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 10:03:55] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 10:03:55] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 10:04:15] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 19 (Operator ID: 3)
+[2025-10-21 10:04:15] [main] [INFO ] ParkingService - Previewing vehicle exit by ID: 19 (Operator ID: 3)
+[2025-10-21 10:04:17] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 10:04:17] [main] [INFO ] ParkingService - Exit preview for ticket 19: Amount $1000.0, Free: false
+[2025-10-21 10:09:33] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 19 with Cash (Operator ID: 3)
+[2025-10-21 10:09:33] [AWT-EventQueue-0] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 19 (Operator ID: 3, Payment: Cash)
+[2025-10-21 10:09:37] [AWT-EventQueue-0] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 10:09:37] [AWT-EventQueue-0] [INFO ] ParkingService - Payment recorded: $1000.0 (Cash) for KIO123 (Ticket: 19)
+[2025-10-21 10:09:38] [AWT-EventQueue-0] [INFO ] ParkingService - Vehicle exit successful: KIO123 - Ticket ID: 19 (Amount: $1000.0, Free: false)
+[2025-10-21 10:09:38] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Exit successful - Amount: $1000.0, Method: Cash
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Card (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Card
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [ERROR] SwingVehicleExitController - Error previewing exit by plate: Database error
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: ABC123 with Cash (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [ERROR] SwingVehicleExitController - Error previewing exit by ID: Database error
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: XYZ999 with Cash (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [WARN ] SwingVehicleExitController - Exit failed: No se encontró un ticket abierto (NOT_FOUND)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 999 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
+[2025-10-21 10:14:10] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Card (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Card
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [ERROR] SwingVehicleExitController - Error previewing exit by plate: Database error
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: ABC123 with Cash (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 123 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [ERROR] SwingVehicleExitController - Error previewing exit by ID: Database error
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit by plate: XYZ999 with Cash (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [WARN ] SwingVehicleExitController - Exit failed: No se encontró un ticket abierto (NOT_FOUND)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 999 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [WARN ] SwingVehicleExitController - Exit failed: Ticket not found (NOT_FOUND)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
+[2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
