@@ -59,8 +59,8 @@ public class MainMenuView {
      */
     public void showGoodbye(String operatorName) {
         javax.swing.JOptionPane.showMessageDialog(null, 
-            "Thank you for using Parking System!\nGoodbye, " + operatorName, 
-            "Logout", 
+            "¡Gracias por usar el Sistema de Parqueadero!\nHasta pronto, " + operatorName, 
+            "Cerrar Sesión", 
             javax.swing.JOptionPane.INFORMATION_MESSAGE);
     }
 }

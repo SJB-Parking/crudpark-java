@@ -45,13 +45,13 @@ public class TicketPrinter {
             try {
                 printerJob.print();
                 JOptionPane.showMessageDialog(null,
-                    "Ticket sent to printer successfully!",
-                    "Print Success",
+                    "¡Ticket enviado a impresora exitosamente!",
+                    "Impresión Exitosa",
                     JOptionPane.INFORMATION_MESSAGE);
             } catch (PrinterException ex) {
                 JOptionPane.showMessageDialog(null,
-                    "Error printing ticket: " + ex.getMessage(),
-                    "Print Error",
+                    "Error al imprimir ticket: " + ex.getMessage(),
+                    "Error de Impresión",
                     JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -87,13 +87,13 @@ public class TicketPrinter {
             try {
                 printerJob.print();
                 JOptionPane.showMessageDialog(null,
-                    "Receipt sent to printer successfully!",
-                    "Print Success",
+                    "¡Recibo enviado a impresora exitosamente!",
+                    "Impresión Exitosa",
                     JOptionPane.INFORMATION_MESSAGE);
             } catch (PrinterException ex) {
                 JOptionPane.showMessageDialog(null,
-                    "Error printing receipt: " + ex.getMessage(),
-                    "Print Error",
+                    "Error al imprimir recibo: " + ex.getMessage(),
+                    "Error de Impresión",
                     JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -139,7 +139,7 @@ public class TicketPrinter {
             
             // Subtitle - centered
             g2d.setFont(headerFont);
-            String subtitle = "ENTRY TICKET";
+            String subtitle = "TICKET DE ENTRADA";
             fm = g2d.getFontMetrics();
             int subtitleWidth = fm.stringWidth(subtitle);
             g2d.drawString(subtitle, leftMargin + (availableWidth - subtitleWidth) / 2, y);
@@ -163,20 +163,20 @@ public class TicketPrinter {
             y += lineHeight;
             
             // License plate - wrap if too long
-            String plateText = "Plate: " + ticket.getLicensePlate();
+            String plateText = "Placa: " + ticket.getLicensePlate();
             g2d.setFont(boldFont);
             g2d.drawString(plateText, leftMargin, y);
             y += lineHeight;
             
             g2d.setFont(normalFont);
-            g2d.drawString("Type: " + ticket.getVehicleType(), leftMargin, y);
+            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanishShort(ticket.getVehicleType()), leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Class: " + ticket.getTicketType(), leftMargin, y);
+            g2d.drawString("Clase: " + ticket.getTicketType(), leftMargin, y);
             y += lineHeight;
             
             // Entry time - may need to wrap
-            g2d.drawString("Entry:", leftMargin, y);
+            g2d.drawString("Entrada:", leftMargin, y);
             y += lineHeight;
             g2d.drawString(formattedEntryTime, leftMargin, y);
             y += lineHeight + 5;
@@ -206,8 +206,8 @@ public class TicketPrinter {
             g2d.setFont(new Font("Monospaced", Font.PLAIN, 6));
             
             // Word wrap for footer text
-            String footer1 = "Keep ticket for exit";
-            String footer2 = "Thank you!";
+            String footer1 = "Conserve el ticket";
+            String footer2 = "¡Gracias!";
             
             fm = g2d.getFontMetrics();
             int footer1Width = fm.stringWidth(footer1);
@@ -264,7 +264,7 @@ public class TicketPrinter {
             
             // Subtitle - centered
             g2d.setFont(headerFont);
-            String subtitle = "PAYMENT RECEIPT";
+            String subtitle = "RECIBO DE PAGO";
             fm = g2d.getFontMetrics();
             int subtitleWidth = fm.stringWidth(subtitle);
             g2d.drawString(subtitle, leftMargin + (availableWidth - subtitleWidth) / 2, y);
@@ -293,16 +293,16 @@ public class TicketPrinter {
             y += lineHeight;
             
             // License plate
-            String plateText = "Plate: " + ticket.getLicensePlate();
+            String plateText = "Placa: " + ticket.getLicensePlate();
             g2d.setFont(boldFont);
             g2d.drawString(plateText, leftMargin, y);
             y += lineHeight;
             
             g2d.setFont(normalFont);
-            g2d.drawString("Type: " + ticket.getVehicleType(), leftMargin, y);
+            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanishShort(ticket.getVehicleType()), leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Class: " + ticket.getTicketType(), leftMargin, y);
+            g2d.drawString("Clase: " + ticket.getTicketType(), leftMargin, y);
             y += lineHeight + 5;
             
             // Separator line
@@ -310,17 +310,17 @@ public class TicketPrinter {
             y += 10;
             
             // Time information
-            g2d.drawString("Entry:", leftMargin, y);
+            g2d.drawString("Entrada:", leftMargin, y);
             y += lineHeight;
             g2d.drawString(formattedEntryTime, leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Exit:", leftMargin, y);
+            g2d.drawString("Salida:", leftMargin, y);
             y += lineHeight;
             g2d.drawString(formattedExitTime, leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Duration:", leftMargin, y);
+            g2d.drawString("Duracion:", leftMargin, y);
             y += lineHeight;
             g2d.drawString(String.format("%dh %dm", hours, minutes), leftMargin, y);
             y += lineHeight + 5;
@@ -331,7 +331,7 @@ public class TicketPrinter {
             
             // Payment amount - centered and prominent
             g2d.setFont(boldFont);
-            String payLabel = "TOTAL TO PAY:";
+            String payLabel = "TOTAL A PAGAR:";
             fm = g2d.getFontMetrics();
             int payLabelWidth = fm.stringWidth(payLabel);
             g2d.drawString(payLabel, leftMargin + (availableWidth - payLabelWidth) / 2, y);
@@ -340,7 +340,7 @@ public class TicketPrinter {
             g2d.setFont(amountFont);
             String amountText;
             if (exitResult.isFree()) {
-                amountText = "FREE";
+                amountText = "GRATIS";
                 g2d.drawString(amountText, leftMargin + (availableWidth - fm.stringWidth(amountText)) / 2, y);
                 y += 12;
                 g2d.setFont(new Font("Monospaced", Font.PLAIN, 6));
@@ -361,17 +361,17 @@ public class TicketPrinter {
             // Footer
             g2d.setFont(new Font("Monospaced", Font.PLAIN, 6));
             SimpleDateFormat footerDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            String printTime = "Print: " + footerDateFormat.format(new Date());
+            String printTime = "Impreso: " + footerDateFormat.format(new Date());
             fm = g2d.getFontMetrics();
             g2d.drawString(printTime, leftMargin + (availableWidth - fm.stringWidth(printTime)) / 2, y);
             y += 10;
             
-            String thanks = "Thank you!";
+            String thanks = "¡Gracias!";
             fm = g2d.getFontMetrics();
             g2d.drawString(thanks, leftMargin + (availableWidth - fm.stringWidth(thanks)) / 2, y);
             y += 10;
             
-            String safety = "Drive safely!";
+            String safety = "¡Conduce seguro!";
             fm = g2d.getFontMetrics();
             g2d.drawString(safety, leftMargin + (availableWidth - fm.stringWidth(safety)) / 2, y);
             

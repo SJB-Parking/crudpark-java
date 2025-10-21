@@ -51,10 +51,10 @@ public class VehicleExitView {
     private void showSuccessWindow(ExitResult result) {
         // Ask FIRST if user wants to print
         int printChoice = JOptionPane.showConfirmDialog(null,
-            "Exit processed successfully!\n\n" +
-            "Would you like to print the receipt?\n" +
-            "(If you select NO, it will be displayed on screen)",
-            "Print Receipt?",
+            "¡Salida procesada exitosamente!\n\n" +
+            "¿Desea imprimir el recibo?\n" +
+            "(Si selecciona NO, se mostrará en pantalla)",
+            "¿Imprimir Recibo?",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE);
         
@@ -86,15 +86,15 @@ public class VehicleExitView {
     private String getErrorTitle(ExitResult.ErrorType errorType) {
         switch (errorType) {
             case VALIDATION:
-                return "Validation Error";
+                return "Error de Validación";
             case NOT_FOUND:
-                return "Not Found";
+                return "No Encontrado";
             case BUSINESS:
-                return "Business Error";
+                return "Error de Negocio";
             case DATA_ACCESS:
-                return "Database Error";
+                return "Error de Base de Datos";
             default:
-                return "Exit Error";
+                return "Error de Salida";
         }
     }
 }

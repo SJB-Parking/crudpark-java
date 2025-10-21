@@ -51,10 +51,10 @@ public class VehicleEntryView {
     private void showSuccessWindow(EntryResult result) {
         // Ask FIRST if user wants to print
         int printChoice = JOptionPane.showConfirmDialog(null,
-            "Ticket registered successfully!\n\n" +
-            "Would you like to print the ticket?\n" +
-            "(If you select NO, it will be displayed on screen)",
-            "Print Ticket?",
+            "¡Ticket registrado exitosamente!\n\n" +
+            "¿Desea imprimir el ticket?\n" +
+            "(Si selecciona NO, se mostrará en pantalla)",
+            "¿Imprimir Ticket?",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE);
         
@@ -86,13 +86,13 @@ public class VehicleEntryView {
     private String getErrorTitle(EntryResult.ErrorType errorType) {
         switch (errorType) {
             case VALIDATION:
-                return "Validation Error";
+                return "Error de Validación";
             case BUSINESS:
-                return "Business Error";
+                return "Error de Negocio";
             case DATA_ACCESS:
-                return "Database Error";
+                return "Error de Base de Datos";
             default:
-                return "Entry Error";
+                return "Error de Entrada";
         }
     }
 }

@@ -18,7 +18,7 @@ public class LoginFrame extends JDialog {
     private boolean loginSuccessful = false;
 
     public LoginFrame() {
-        super((Frame) null, "CrudPark - Login", true); // modal dialog
+        super((Frame) null, "CrudPark - Inicio de Sesión", true); // modal dialog
         initComponents();
     }
 
@@ -35,7 +35,7 @@ public class LoginFrame extends JDialog {
         mainPanel.setBackground(new Color(240, 240, 240));
 
         // Title
-        JLabel titleLabel = new JLabel("Operator Login", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Inicio de Sesión Operador", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
@@ -45,12 +45,12 @@ public class LoginFrame extends JDialog {
         formPanel.setLayout(new GridLayout(2, 2, 10, 15));
         formPanel.setBackground(new Color(240, 240, 240));
 
-        JLabel emailLabel = new JLabel("Email:");
+        JLabel emailLabel = new JLabel("Correo:");
         emailLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         emailField = new JTextField(20);
         emailField.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        JLabel passwordLabel = new JLabel("Password:");
+        JLabel passwordLabel = new JLabel("Contraseña:");
         passwordLabel.setFont(new Font("Arial", Font.PLAIN, 14));
         passwordField = new JPasswordField(20);
         passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -67,7 +67,7 @@ public class LoginFrame extends JDialog {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(240, 240, 240));
 
-        loginButton = new JButton("Login");
+        loginButton = new JButton("Ingresar");
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
         loginButton.setPreferredSize(new Dimension(100, 35));
         loginButton.setBackground(new Color(0, 120, 215));
@@ -75,7 +75,7 @@ public class LoginFrame extends JDialog {
         loginButton.setFocusPainted(false);
         loginButton.addActionListener(e -> handleLogin());
 
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.PLAIN, 14));
         cancelButton.setPreferredSize(new Dimension(100, 35));
         cancelButton.addActionListener(e -> handleCancel());
@@ -97,8 +97,8 @@ public class LoginFrame extends JDialog {
 
         if (email.isEmpty() || password.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                "Please fill in all fields",
-                "Login Error",
+                "Por favor complete todos los campos",
+                "Error de Inicio de Sesión",
                 JOptionPane.ERROR_MESSAGE);
             return;
         }

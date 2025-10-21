@@ -20,7 +20,7 @@ public class VehicleEntryFrame extends JDialog {
     private boolean registered = false;
 
     public VehicleEntryFrame() {
-        super((Frame) null, "CrudPark - Vehicle Entry", true); // modal dialog
+        super((Frame) null, "CrudPark - Entrada de Vehículo", true); // modal dialog
         initComponents();
     }
 
@@ -37,7 +37,7 @@ public class VehicleEntryFrame extends JDialog {
         mainPanel.setBackground(new Color(240, 240, 240));
 
         // Title
-        JLabel titleLabel = new JLabel("Register Vehicle Entry", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Registrar Entrada de Vehículo", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
@@ -49,8 +49,8 @@ public class VehicleEntryFrame extends JDialog {
 
         // Instructions
         JLabel instructionLabel = new JLabel("<html><div style='text-align: center;'>" +
-            "Car format: <b>ABC123</b> (3 letters + 3 numbers)<br>" +
-            "Motorcycle format: <b>ABC12D</b> (3 letters + 2 numbers + 1 letter)" +
+            "Formato Carro: <b>ABC123</b> (3 letras + 3 números)<br>" +
+            "Formato Moto: <b>ABC12D</b> (3 letras + 2 números + 1 letra)" +
             "</div></html>", SwingConstants.CENTER);
         instructionLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         instructionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -63,7 +63,7 @@ public class VehicleEntryFrame extends JDialog {
         inputPanel.setBackground(new Color(240, 240, 240));
         inputPanel.setMaximumSize(new Dimension(500, 50));
 
-        JLabel plateLabel = new JLabel("License Plate:");
+        JLabel plateLabel = new JLabel("Placa:");
         plateLabel.setFont(new Font("Arial", Font.BOLD, 14));
         
         licensePlateField = new JTextField(15);
@@ -81,7 +81,7 @@ public class VehicleEntryFrame extends JDialog {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(240, 240, 240));
 
-        registerButton = new JButton("Register Entry");
+        registerButton = new JButton("Registrar Entrada");
         registerButton.setFont(new Font("Arial", Font.BOLD, 14));
         registerButton.setPreferredSize(new Dimension(150, 35));
         registerButton.setBackground(new Color(0, 120, 215));
@@ -89,7 +89,7 @@ public class VehicleEntryFrame extends JDialog {
         registerButton.setFocusPainted(false);
         registerButton.addActionListener(e -> handleRegister());
 
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.PLAIN, 14));
         cancelButton.setPreferredSize(new Dimension(100, 35));
         cancelButton.addActionListener(e -> dispose());
@@ -110,8 +110,8 @@ public class VehicleEntryFrame extends JDialog {
 
         if (licensePlate.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                "Please enter a license plate",
-                "Validation Error",
+                "Por favor ingrese una placa",
+                "Error de Validación",
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -145,7 +145,7 @@ public class VehicleEntryFrame extends JDialog {
         mainPanel.setBackground(Color.WHITE);
 
         // Header
-        JLabel headerLabel = new JLabel("ENTRY REGISTERED", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("ENTRADA REGISTRADA", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(new Color(0, 120, 215));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
@@ -175,7 +175,7 @@ public class VehicleEntryFrame extends JDialog {
         Font plateFont = new Font("Arial", Font.BOLD, 16);
 
         // Ticket ID
-        JLabel ticketIdLabel = new JLabel("Ticket ID:");
+        JLabel ticketIdLabel = new JLabel("ID Ticket:");
         ticketIdLabel.setFont(labelFont);
         JLabel ticketIdValue = new JLabel(String.format("%06d", ticket.getId()));
         ticketIdValue.setFont(valueFont);
@@ -183,7 +183,7 @@ public class VehicleEntryFrame extends JDialog {
         infoPanel.add(ticketIdValue);
 
         // License Plate (destacado)
-        JLabel plateLabel = new JLabel("License Plate:");
+        JLabel plateLabel = new JLabel("Placa:");
         plateLabel.setFont(labelFont);
         JLabel plateValue = new JLabel(ticket.getLicensePlate());
         plateValue.setFont(plateFont);
@@ -192,15 +192,15 @@ public class VehicleEntryFrame extends JDialog {
         infoPanel.add(plateValue);
 
         // Vehicle Type
-        JLabel typeLabel = new JLabel("Vehicle Type:");
+        JLabel typeLabel = new JLabel("Tipo de Vehículo:");
         typeLabel.setFont(labelFont);
-        JLabel typeValue = new JLabel(ticket.getVehicleType());
+        JLabel typeValue = new JLabel(app.util.VehicleTypeTranslator.toSpanish(ticket.getVehicleType()));
         typeValue.setFont(valueFont);
         infoPanel.add(typeLabel);
         infoPanel.add(typeValue);
 
         // Ticket Type
-        JLabel ticketTypeLabel = new JLabel("Ticket Type:");
+        JLabel ticketTypeLabel = new JLabel("Tipo de Ticket:");
         ticketTypeLabel.setFont(labelFont);
         JLabel ticketTypeValue = new JLabel(ticket.getTicketType());
         ticketTypeValue.setFont(valueFont);
@@ -208,7 +208,7 @@ public class VehicleEntryFrame extends JDialog {
         infoPanel.add(ticketTypeValue);
 
         // Entry Time
-        JLabel entryLabel = new JLabel("Entry Time:");
+        JLabel entryLabel = new JLabel("Hora de Entrada:");
         entryLabel.setFont(labelFont);
         JLabel entryValue = new JLabel(formattedEntryTime);
         entryValue.setFont(valueFont);
@@ -237,13 +237,13 @@ public class VehicleEntryFrame extends JDialog {
 
             // QR description
             qrPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-            JLabel qrDescription = new JLabel("Scan QR code for quick exit");
+            JLabel qrDescription = new JLabel("Escanea el código QR para salida rápida");
             qrDescription.setAlignmentX(Component.CENTER_ALIGNMENT);
             qrDescription.setFont(new Font("Arial", Font.ITALIC, 12));
             qrDescription.setForeground(Color.GRAY);
             qrPanel.add(qrDescription);
         } catch (Exception e) {
-            JLabel errorLabel = new JLabel("Error generating QR code: " + e.getMessage());
+            JLabel errorLabel = new JLabel("Error al generar código QR: " + e.getMessage());
             errorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             errorLabel.setForeground(Color.RED);
             qrPanel.add(errorLabel);
@@ -256,7 +256,7 @@ public class VehicleEntryFrame extends JDialog {
         // Close button
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
-        JButton closeButton = new JButton("Close");
+        JButton closeButton = new JButton("Cerrar");
         closeButton.setFont(new Font("Arial", Font.BOLD, 14));
         closeButton.setPreferredSize(new Dimension(120, 35));
         closeButton.setBackground(new Color(0, 120, 215));

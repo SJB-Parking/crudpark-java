@@ -18,7 +18,7 @@ public class VehicleExitFrame extends JDialog {
     private boolean processed = false;
 
     public VehicleExitFrame() {
-        super((Frame) null, "CrudPark - Vehicle Exit", true); // modal dialog
+        super((Frame) null, "CrudPark - Salida de Vehículo", true); // modal dialog
         initComponents();
     }
 
@@ -35,7 +35,7 @@ public class VehicleExitFrame extends JDialog {
         mainPanel.setBackground(new Color(240, 240, 240));
 
         // Title
-        JLabel titleLabel = new JLabel("Process Vehicle Exit", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Procesar Salida de Vehículo", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 18));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 15, 0));
         mainPanel.add(titleLabel, BorderLayout.NORTH);
@@ -51,7 +51,7 @@ public class VehicleExitFrame extends JDialog {
         inputPanel.setBackground(new Color(240, 240, 240));
         inputPanel.setMaximumSize(new Dimension(450, 50));
 
-        JLabel ticketLabel = new JLabel("Ticket ID:");
+        JLabel ticketLabel = new JLabel("ID Ticket:");
         ticketLabel.setFont(new Font("Arial", Font.BOLD, 14));
         
         ticketIdField = new JTextField(15);
@@ -69,15 +69,15 @@ public class VehicleExitFrame extends JDialog {
         buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
         buttonPanel.setBackground(new Color(240, 240, 240));
 
-        processButton = new JButton("Process Exit");
+        processButton = new JButton("Procesar Salida");
         processButton.setFont(new Font("Arial", Font.BOLD, 14));
-        processButton.setPreferredSize(new Dimension(130, 35));
+        processButton.setPreferredSize(new Dimension(150, 35));
         processButton.setBackground(new Color(0, 150, 136));
         processButton.setForeground(Color.BLACK);
         processButton.setFocusPainted(false);
         processButton.addActionListener(e -> handleProcess());
 
-        cancelButton = new JButton("Cancel");
+        cancelButton = new JButton("Cancelar");
         cancelButton.setFont(new Font("Arial", Font.PLAIN, 14));
         cancelButton.setPreferredSize(new Dimension(100, 35));
         cancelButton.addActionListener(e -> dispose());
@@ -98,8 +98,8 @@ public class VehicleExitFrame extends JDialog {
 
         if (ticketId.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                "Please enter a ticket ID",
-                "Validation Error",
+                "Por favor ingrese un ID de ticket",
+                "Error de Validación",
                 JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -117,14 +117,14 @@ public class VehicleExitFrame extends JDialog {
     }
 
     /**
-     * Show exit success in a new window with payment details
+     * Show exit success in a new MODAL window with payment details
      */
     public static void showExitSuccess(ParkingService.ExitResult result) {
-        JFrame successFrame = new JFrame("Exit Processed Successfully");
-        successFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        successFrame.setSize(500, 550);
-        successFrame.setLocationRelativeTo(null);
-        successFrame.setResizable(false);
+        JDialog successDialog = new JDialog((Frame) null, "Salida Procesada Exitosamente", true); // modal
+        successDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        successDialog.setSize(500, 550);
+        successDialog.setLocationRelativeTo(null);
+        successDialog.setResizable(false);
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout(10, 10));
@@ -132,7 +132,7 @@ public class VehicleExitFrame extends JDialog {
         mainPanel.setBackground(Color.WHITE);
 
         // Header
-        JLabel headerLabel = new JLabel("EXIT PROCESSED", SwingConstants.CENTER);
+        JLabel headerLabel = new JLabel("SALIDA PROCESADA", SwingConstants.CENTER);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 24));
         headerLabel.setForeground(new Color(0, 150, 136));
         headerLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
@@ -167,11 +167,11 @@ public class VehicleExitFrame extends JDialog {
         String exitInfo = String.format(
             "<html><div style='font-family: Arial; padding: 20px; background-color: #f5f5f5; border-radius: 10px;'>" +
             "<table style='width: 100%%;'>" +
-            "<tr><td><b>License Plate:</b></td><td><span style='font-size: 16px; color: #009688;'>%s</span></td></tr>" +
+            "<tr><td><b>Placa:</b></td><td><span style='font-size: 16px; color: #009688;'>%s</span></td></tr>" +
             "<tr><td colspan='2'><hr></td></tr>" +
-            "<tr><td><b>Entry Time:</b></td><td>%s</td></tr>" +
-            "<tr><td><b>Exit Time:</b></td><td>%s</td></tr>" +
-            "<tr><td><b>Duration:</b></td><td><b>%d hours %d minutes</b></td></tr>" +
+            "<tr><td><b>Hora de Entrada:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Hora de Salida:</b></td><td>%s</td></tr>" +
+            "<tr><td><b>Duración:</b></td><td><b>%d horas %d minutos</b></td></tr>" +
             "</table>" +
             "</div></html>",
             result.getTicket().getLicensePlate(),
@@ -202,7 +202,7 @@ public class VehicleExitFrame extends JDialog {
         paymentPanel.setMaximumSize(panelSize);
         paymentPanel.setMinimumSize(panelSize);
 
-        JLabel paymentLabel = new JLabel("TOTAL TO PAY", SwingConstants.CENTER);
+        JLabel paymentLabel = new JLabel("TOTAL A PAGAR", SwingConstants.CENTER);
         paymentLabel.setFont(new Font("Arial", Font.BOLD, 18));
         paymentLabel.setForeground(new Color(60, 60, 60));
         paymentPanel.add(paymentLabel, BorderLayout.NORTH);
@@ -219,18 +219,18 @@ public class VehicleExitFrame extends JDialog {
         // Close button only
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(Color.WHITE);
-        JButton closeButton = new JButton("Close");
+        JButton closeButton = new JButton("Cerrar");
         closeButton.setFont(new Font("Arial", Font.BOLD, 14));
         closeButton.setPreferredSize(new Dimension(120, 35));
         closeButton.setBackground(new Color(0, 150, 136));
         closeButton.setForeground(Color.BLACK);
         closeButton.setFocusPainted(false);
-        closeButton.addActionListener(e -> successFrame.dispose());
+        closeButton.addActionListener(e -> successDialog.dispose());
         buttonPanel.add(closeButton);
 
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        successFrame.add(mainPanel);
-        successFrame.setVisible(true);
+        successDialog.add(mainPanel);
+        successDialog.setVisible(true);
     }
 }

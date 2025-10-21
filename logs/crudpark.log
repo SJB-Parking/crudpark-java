@@ -158,3 +158,21 @@ Caused by: java.net.ConnectException: Connection refused: getsockopt
 [2025-10-20 11:53:57] [app.Main.main()] [INFO ] TicketDAO - Creating ticket: TKT000014 for vehicle ID 24 (Type: Guest)
 [2025-10-20 11:53:57] [app.Main.main()] [INFO ] TicketDAO - Ticket created successfully: ID 16 - TKT000014
 [2025-10-20 11:53:57] [app.Main.main()] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000014 (VVV111)
+[2025-10-20 20:53:13] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-20 20:53:13] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-20 20:53:20] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-20 20:53:20] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-20 20:53:30] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: ZZZ111 (Operator ID: 3)
+[2025-10-20 20:53:32] [main] [WARN ] SwingVehicleEntryController - Entry failed: Vehicle already has an open ticket (BUSINESS)
+[2025-10-20 20:53:49] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: NNN123 (Operator ID: 3)
+[2025-10-20 20:53:50] [main] [INFO ] VehicleDAO - Creating new vehicle: NNN123 (Type: Car)
+[2025-10-20 20:53:51] [main] [INFO ] VehicleDAO - Vehicle created: NNN123 - ID 25
+[2025-10-20 20:53:51] [main] [INFO ] TicketDAO - Creating ticket: TKT000015 for vehicle ID 25 (Type: Guest)
+[2025-10-20 20:53:52] [main] [INFO ] TicketDAO - Ticket created successfully: ID 17 - TKT000015
+[2025-10-20 20:53:52] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000015 (NNN123)
+[2025-10-20 20:55:55] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 12 (Operator ID: 3)
+[2025-10-20 20:55:55] [main] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 12 (Operator ID: 3)
+[2025-10-20 20:55:57] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-20 20:55:57] [main] [INFO ] ParkingService - Payment recorded: $30000.0 for JJJ888 (Ticket: 12)
+[2025-10-20 20:55:57] [main] [INFO ] ParkingService - Vehicle exit successful: JJJ888 - Ticket ID: 12 (Amount: $30000.0, Free: false)
+[2025-10-20 20:55:57] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $30000.0

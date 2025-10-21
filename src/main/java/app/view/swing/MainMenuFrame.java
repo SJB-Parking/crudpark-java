@@ -14,7 +14,7 @@ public class MainMenuFrame extends JFrame {
     }
 
     private void initComponents(String operatorName) {
-        setTitle("CrudPark - Main Menu");
+        setTitle("CrudPark - Menú Principal");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(500, 400);
         setLocationRelativeTo(null);
@@ -31,11 +31,11 @@ public class MainMenuFrame extends JFrame {
         headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
         headerPanel.setBackground(new Color(240, 240, 240));
 
-        JLabel titleLabel = new JLabel("Parking Management System", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Sistema de Gestión de Parqueadero", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel operatorLabel = new JLabel("Operator: " + operatorName, SwingConstants.CENTER);
+        JLabel operatorLabel = new JLabel("Operador: " + operatorName, SwingConstants.CENTER);
         operatorLabel.setFont(new Font("Arial", Font.ITALIC, 14));
         operatorLabel.setForeground(new Color(100, 100, 100));
         operatorLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -52,13 +52,13 @@ public class MainMenuFrame extends JFrame {
         menuPanel.setBackground(new Color(240, 240, 240));
         menuPanel.setBorder(BorderFactory.createEmptyBorder(10, 40, 10, 40));
 
-        JButton vehicleEntryButton = createMenuButton("Vehicle Entry", new Color(0, 120, 215));
+        JButton vehicleEntryButton = createMenuButton("Entrada de Vehículo", new Color(0, 120, 215));
         vehicleEntryButton.addActionListener(e -> selectOption("1"));
 
-        JButton vehicleExitButton = createMenuButton("Vehicle Exit", new Color(0, 150, 136));
+        JButton vehicleExitButton = createMenuButton("Salida de Vehículo", new Color(0, 150, 136));
         vehicleExitButton.addActionListener(e -> selectOption("2"));
 
-        JButton exitButton = createMenuButton("Exit System", new Color(200, 50, 50));
+        JButton exitButton = createMenuButton("Cerrar Sesión", new Color(200, 50, 50));
         exitButton.addActionListener(e -> selectOption("3"));
 
         menuPanel.add(vehicleEntryButton);
@@ -68,7 +68,7 @@ public class MainMenuFrame extends JFrame {
         mainPanel.add(menuPanel, BorderLayout.CENTER);
 
         // Footer
-        JLabel footerLabel = new JLabel("Select an option", SwingConstants.CENTER);
+        JLabel footerLabel = new JLabel("Seleccione una opción", SwingConstants.CENTER);
         footerLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         footerLabel.setForeground(new Color(100, 100, 100));
         mainPanel.add(footerLabel, BorderLayout.SOUTH);

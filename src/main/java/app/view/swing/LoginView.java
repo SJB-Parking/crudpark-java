@@ -61,8 +61,8 @@ public class LoginView {
      */
     private void showSuccessMessage(Operator operator) {
         JOptionPane.showMessageDialog(null,
-            "Welcome, " + operator.getFullName() + "!",
-            "Login Successful",
+            "¡Bienvenido, " + operator.getFullName() + "!",
+            "Inicio de Sesión Exitoso",
             JOptionPane.INFORMATION_MESSAGE);
     }
 
@@ -75,7 +75,7 @@ public class LoginView {
         String message = result.getErrorMessage();
         
         int option = JOptionPane.showConfirmDialog(null,
-            message + "\n\nDo you want to try again?",
+            message + "\n\n¿Desea intentar nuevamente?",
             title,
             JOptionPane.YES_NO_OPTION,
             JOptionPane.ERROR_MESSAGE);
@@ -89,13 +89,13 @@ public class LoginView {
     private String getErrorTitle(LoginResult.ErrorType errorType) {
         switch (errorType) {
             case VALIDATION:
-                return "Validation Error";
+                return "Error de Validación";
             case AUTHENTICATION:
-                return "Authentication Error";
+                return "Error de Autenticación";
             case DATA_ACCESS:
-                return "Database Error";
+                return "Error de Base de Datos";
             default:
-                return "Login Error";
+                return "Error de Inicio de Sesión";
         }
     }
 }
