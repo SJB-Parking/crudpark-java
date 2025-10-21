@@ -169,10 +169,10 @@ public class TicketPrinter {
             y += lineHeight;
             
             g2d.setFont(normalFont);
-            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanishShort(ticket.getVehicleType()), leftMargin, y);
+            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanish(ticket.getVehicleType()), leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Clase: " + ticket.getTicketType(), leftMargin, y);
+            g2d.drawString("Clase: " + VehicleTypeTranslator.ticketTypeToSpanish(ticket.getTicketType()), leftMargin, y);
             y += lineHeight;
             
             // Entry time - may need to wrap
@@ -299,10 +299,10 @@ public class TicketPrinter {
             y += lineHeight;
             
             g2d.setFont(normalFont);
-            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanishShort(ticket.getVehicleType()), leftMargin, y);
+            g2d.drawString("Tipo: " + VehicleTypeTranslator.toSpanish(ticket.getVehicleType()), leftMargin, y);
             y += lineHeight;
             
-            g2d.drawString("Clase: " + ticket.getTicketType(), leftMargin, y);
+            g2d.drawString("Clase: " + VehicleTypeTranslator.ticketTypeToSpanish(ticket.getTicketType()), leftMargin, y);
             y += lineHeight + 5;
             
             // Separator line

@@ -318,3 +318,36 @@ Motorcycle: 3 letters + 2 numbers + 1 letter (e.g., ABC12D) (BUSINESS)
 [2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Previewing exit for plate: ABC123 (Operator ID: 1)
 [2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 123 with Cash (Operator ID: 1)
 [2025-10-21 10:14:41] [main] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 11:12:08] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 11:12:08] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 11:12:10] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 11:12:10] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 11:14:31] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 11:14:31] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 11:14:33] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 11:14:33] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 11:14:46] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: BNM090 (Operator ID: 3)
+[2025-10-21 11:14:47] [main] [INFO ] VehicleDAO - Creating new vehicle: BNM090 (Type: Car)
+[2025-10-21 11:14:47] [main] [INFO ] VehicleDAO - Vehicle created: BNM090 - ID 37
+[2025-10-21 11:14:48] [main] [INFO ] TicketDAO - Creating ticket: TKT000019 for vehicle ID 37 (Type: Guest)
+[2025-10-21 11:14:48] [main] [INFO ] TicketDAO - Ticket created successfully: ID 21 - TKT000019
+[2025-10-21 11:14:48] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000019 (BNM090)
+[2025-10-21 11:16:47] [main] [INFO ] SwingVehicleExitController - Previewing exit for ticket ID: 21 (Operator ID: 3)
+[2025-10-21 11:16:47] [main] [INFO ] ParkingService - Previewing vehicle exit by ID: 21 (Operator ID: 3)
+[2025-10-21 11:16:48] [main] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 11:16:48] [main] [INFO ] ParkingService - Exit preview for ticket 21: Amount $0.0, Free: true
+[2025-10-21 11:17:05] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Processing vehicle exit: Ticket 21 with Cash (Operator ID: 3)
+[2025-10-21 11:17:05] [AWT-EventQueue-0] [INFO ] ParkingService - Processing vehicle exit: Ticket ID 21 (Operator ID: 3, Payment: Cash)
+[2025-10-21 11:17:06] [AWT-EventQueue-0] [INFO ] RateDAO - Active rate found for Car: Tarifa Carros 2025 - $3000.0/hr (Grace: 30 min)
+[2025-10-21 11:17:06] [AWT-EventQueue-0] [INFO ] ParkingService - Exit free - Grace period: BNM090 (Duration: 2min)
+[2025-10-21 11:17:06] [AWT-EventQueue-0] [INFO ] ParkingService - Vehicle exit successful: BNM090 - Ticket ID: 21 (Amount: $0.0, Free: true)
+[2025-10-21 11:17:06] [AWT-EventQueue-0] [INFO ] SwingVehicleExitController - Exit successful - Amount: $0.0, Method: Cash
+[2025-10-21 11:26:48] [main] [INFO ] SwingAuthController - Processing login request
+[2025-10-21 11:26:48] [main] [INFO ] AuthService - Login attempt for: admin@parking.com
+[2025-10-21 11:26:51] [main] [INFO ] AuthService - Login successful: admin@parking.com (Admin User)
+[2025-10-21 11:26:51] [main] [INFO ] SwingAuthController - Login successful for: Admin User
+[2025-10-21 11:27:37] [main] [INFO ] SwingVehicleEntryController - Processing vehicle entry: ABC124 (Operator ID: 3)
+[2025-10-21 11:27:38] [main] [INFO ] ParkingService - Active subscription found for ABC124: Subscription ID 6
+[2025-10-21 11:27:38] [main] [INFO ] TicketDAO - Creating ticket: TKT000020 for vehicle ID 32 (Type: Monthly)
+[2025-10-21 11:27:38] [main] [INFO ] TicketDAO - Ticket created successfully: ID 22 - TKT000020
+[2025-10-21 11:27:38] [main] [INFO ] SwingVehicleEntryController - Entry successful - Ticket: TKT000020 (ABC124)

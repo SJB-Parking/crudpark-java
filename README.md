@@ -3,7 +3,6 @@
 [![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue.svg)](https://www.postgresql.org/)
 [![Maven](https://img.shields.io/badge/Maven-3.x-red.svg)](https://maven.apache.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 Complete parking management system developed in Java with Swing GUI, PostgreSQL database, and modern MVC architecture.
 
@@ -454,6 +453,13 @@ Developed by **SJB-Parking**
 
 - GitHub: [@SJB-Parking](https://github.com/SJB-Parking)
 
+## 👨‍💻 Author
+
+**Johan Ramirez Marin**
+
+- 🏫 Clan: Berners Lee
+- 📧 Email: [johanruma@gmail.com](mailto:johanruma@gmail.com)
+- 💼 GitHub: [@Johan192004](https://github.com/Johan192004)
 
 ---
 
