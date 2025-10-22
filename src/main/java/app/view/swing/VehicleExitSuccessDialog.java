@@ -1,6 +1,7 @@
 package app.view.swing;
 
 import app.service.ParkingService;
+import app.util.TicketPrinter;
 import app.util.VehicleTypeTranslator;
 
 import javax.swing.*;
@@ -44,10 +45,32 @@ public class VehicleExitSuccessDialog extends JDialog {
 
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Close button
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        // Button panel with Print and Close buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 0));
         buttonPanel.setBackground(Color.WHITE);
         
+        // Print Receipt button
+        JButton printButton = new JButton("Imprimir Recibo");
+        printButton.setFont(new Font("Arial", Font.BOLD, 14));
+        printButton.setPreferredSize(new Dimension(160, 40));
+        printButton.setBackground(new Color(33, 150, 243));
+        printButton.setForeground(Color.BLACK);
+        printButton.setFocusPainted(false);
+        printButton.addActionListener(e -> {
+            int choice = JOptionPane.showConfirmDialog(
+                this,
+                "¿Desea imprimir el recibo?",
+                "Imprimir Recibo",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            
+            if (choice == JOptionPane.YES_OPTION) {
+                TicketPrinter.printExitTicket(result);
+            }
+        });
+        
+        // Close button
         JButton closeButton = new JButton("Cerrar");
         closeButton.setFont(new Font("Arial", Font.BOLD, 14));
         closeButton.setPreferredSize(new Dimension(120, 40));
@@ -56,6 +79,7 @@ public class VehicleExitSuccessDialog extends JDialog {
         closeButton.setFocusPainted(false);
         closeButton.addActionListener(e -> dispose());
         
+        buttonPanel.add(printButton);
         buttonPanel.add(closeButton);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
